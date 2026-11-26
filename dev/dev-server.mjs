@@ -71,7 +71,7 @@ Content-Type: application/json
 POST {{baseUrl}}/api/login
 Content-Type: application/x-www-form-urlencoded
 
-user=warren&pass=secret
+user=demo&pass=secret
 
 ### 慢响应（3 秒，用来看 loading / 之后试取消）
 # @interface_id slow0001

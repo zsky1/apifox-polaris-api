@@ -52,7 +52,7 @@ export function checkRef(ref, expectedVersion) {
   if (!zh.name || !zh.description) problems.push('缺少 zh-CN 本地化名称/描述');
 
   // 3) 候选 JSON 与版本、与 tag 上的下载地址必须一致
-  const candPath = `store-pr/candidates/${'com.warren.polaris.api'}.json`;
+  const candPath = `store-pr/candidates/${'com.fax.apifox'}.json`;
   if (existsAt(ref, candPath)) {
     const cand = JSON.parse(readAt(ref, candPath));
     if (cand.version !== expectedVersion) problems.push(`候选 JSON 版本 ${cand.version} != ${expectedVersion}`);

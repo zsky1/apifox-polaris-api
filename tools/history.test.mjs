@@ -574,7 +574,7 @@ async function main() {
     const meta = JSON.parse(fs.readFileSync(mp, 'utf8'));
     assert.deepEqual(Object.keys(meta), ['formatVersion', 'app', 'createdAt']);
     assert.equal(meta.formatVersion, 1);
-    assert.equal(meta.app, 'com.warren.polaris.api');
+    assert.equal(meta.app, 'com.fax.apifox');
     assert.ok(!Number.isNaN(Date.parse(meta.createdAt)), 'createdAt 应是 ISO 8601');
   });
 
@@ -596,7 +596,7 @@ async function main() {
     const p2 = path.join(dir2, 'demo.http');
     write(p2, SAMPLE);
     fs.mkdirSync(path.join(dir2, '_history'), { recursive: true });
-    const mine = '{"formatVersion":1,"app":"com.warren.polaris.api","createdAt":"2020-01-01T00:00:00.000Z"}\n';
+    const mine = '{"formatVersion":1,"app":"com.fax.apifox","createdAt":"2020-01-01T00:00:00.000Z"}\n';
     write(path.join(dir2, '_history', '_meta.json'), mine);
     const store2 = S.createStore(fsHost(), { dir: dir2 });
     await HIST.createHistory({ store: store2, dir: dir2 }).record({ path: p2, req: req(), response: resp() });
@@ -606,7 +606,7 @@ async function main() {
   await ok('_meta.json 读不懂时不覆盖：只报 META_UNREADABLE，数据还在', async () => {
     const dir = mkdir();
     fs.mkdirSync(path.join(dir, '_history'), { recursive: true });
-    const broken = '{"formatVersion":2,"app":"com.warren.polaris.api","extra":';
+    const broken = '{"formatVersion":2,"app":"com.fax.apifox","extra":';
     const mp = path.join(dir, '_history', '_meta.json');
     write(mp, broken);
     const store = S.createStore(fsHost(), { dir });

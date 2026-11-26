@@ -3,7 +3,7 @@
  *
  * 它 spawn 真正的 sidecar，用 JSON-RPC 发一条真实请求到 DeepSeek（最便宜的
  * deepseek-chat，实际路由到 deepseek-flash），在 stdout 上收插件的
- * `polaris/http/stream` 事件通知，断言：
+ * `apifox/http/stream` 事件通知，断言：
  *   1. 事件是「陆续」到的，不是攒完一次性吐出来；
  *   2. 每一块都能拼回去，且包含 [DONE]；
  *   3. RPC 返回值不带 body（streamed=true），所以流多长都不会撞 8 MiB 上限。
@@ -28,7 +28,7 @@ if (!KEY) {
 function findBin() {
   if (process.env.BIN) return process.env.BIN;
   const exe = process.platform === 'win32' ? '.exe' : '';
-  const name = 'dbx-plugin-warren-polaris-api' + exe;
+  const name = 'dbx-plugin-apifox' + exe;
   /* 两个目录都有时取**最新**的那个：debug 刚编完、release 还是上周的产物，
    * 只按目录顺序挑会拿旧二进制去测新代码，然后一头雾水。 */
   const hits = [
@@ -82,7 +82,7 @@ const arrivals = [];
 let openAt = null, openStatus = 0, doneAt = null, doneEvent = null, firstAt = null;
 
 onEvent = (m) => {
-  if (m.method !== 'polaris/http/stream') return;
+  if (m.method !== 'apifox/http/stream') return;
   const p = m.params || {};
   if (p.requestId !== sid) return;
   const at = Date.now() - t0;

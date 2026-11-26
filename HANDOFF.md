@@ -1,4 +1,4 @@
-# 交接单 · warren-polaris-api v0.9.0 → 1.0.0
+# 交接单 · apifox-polaris-api v0.9.0 → 1.0.0
 
 > 这份文档是给"另一台电脑上的新会话"看的。**它没有上一轮的对话记忆**，
 > 所有判断依据都在这里和 `docs/plan-v1.0.0.md` 里。读完这份就能接着干活。
@@ -47,12 +47,12 @@ node -v        # 需要 >= 18，建议 22
 
 # 2) 在 WorkBuddy 里新建一个任务（会自动生成 ~/WorkBuddy/<日期时间>/ 目录），
 #    把 zip 里的这三个目录解压到该工作区根下，保持同级：
-#      warren-polaris-api/   verify-ui/   dev-workspace/
+#      apifox-polaris-api/   verify-ui/   dev-workspace/
 #    再把 .workbuddy/memory/ 解压到该工作区的 .workbuddy/ 下
 #    （Mac 上双击用「归档实用工具」解压即可；包内中文文件名的 UTF-8 标志已校验过）
 
 # 3) 自检：应当全绿，且 git 历史完整（最新一条是 S7.1 格式冻结）
-cd warren-polaris-api
+cd apifox-polaris-api
 git log --oneline | head -3      # 最新一条应是 S7.1 数据格式冻结
 git status --short               # 应为空（或只有 HANDOFF.md）
 node tools/all.mjs               # 14 个文件全绿
@@ -61,19 +61,19 @@ node tools/all.mjs               # 14 个文件全绿
 node dev/dev-server.mjs
 ```
 
-**为什么必须保持 `warren-polaris-api` 与 `verify-ui` 同级**：
-`verify-ui/check-*.mjs` 里写的是 `path.resolve(..., '..', 'warren-polaris-api')`，
+**为什么必须保持 `apifox-polaris-api` 与 `verify-ui` 同级**：
+`verify-ui/check-*.mjs` 里写的是 `path.resolve(..., '..', 'apifox-polaris-api')`，
 靠的是相对位置，不是绝对路径。
 
 > **⚠ 仓库里没有的东西**：`verify-ui/`（二十一个端到端脚本）和 `dev-workspace/` 一直放在项目目录**外面**，
-> 从来没进过 `nianshengmei/warren-polaris-api`。所以：
+> 从来没进过 `zsky1/apifox-polaris-api`。所以：
 > - 只想接着写代码 / 跑 `node tools/all.mjs` → `git clone` 就够，什么都不缺；
 > - 要跑真浏览器验收（`check-s25*.mjs`）→ 得从迁移包 `polaris-handoff-20261121-r15.zip` 里
->   取 `verify-ui/` 和 `dev-workspace/`，放到与 `warren-polaris-api` 同级。
+>   取 `verify-ui/` 和 `dev-workspace/`，放到与 `apifox-polaris-api` 同级。
 >   `dev-workspace` 缺失时代码会自己种一份，只是侧栏初始状态跟现在不同。
 
 **新会话开场白建议直接说**：
-> 读 `warren-polaris-api/HANDOFF.md` 和 `docs/plan-v1.0.0.md`，从 M6 的 S6.1 开始。口径不许改。
+> 读 `apifox-polaris-api/HANDOFF.md` 和 `docs/plan-v1.0.0.md`，从 M6 的 S6.1 开始。口径不许改。
 
 ---
 
@@ -148,8 +148,8 @@ node dev/dev-server.mjs
   > `.dbx-store.json` 的 `releaseNotes` 仍是 0.6.4 文案 —— 它只影响商店展示，0.9.0 不上架，**留到 1.0.0 再写，避免写两遍**。
 - **S7.3 出包（要通网）**：tag `v1.0.0` → GitHub Release → Actions 三平台构建（本仓库这份沙箱连不上 GitHub，
   只能在通网机器上做）。
-- **S7.4 上架（要通网 + 维护者审）**：新开商店 PR，`candidates/com.warren.polaris.api.json` 指向 v1.0.0
-  五平台产物 + `publishers/warren.json`，附 release notes。
+- **S7.4 上架（要通网 + 维护者审）**：新开商店 PR，`candidates/com.fax.apifox.json` 指向 v1.0.0
+  五平台产物 + `publishers/fax.json`，附 release notes。
 
 发版前最后跑一次（沙箱里就能做的）：
 ```bash
@@ -223,7 +223,7 @@ cd ../verify-ui && node check-s61.mjs && node check-s71.mjs
 ## 6. 发版口径（v0.6.x 之后换新序列）
 
 - 版本号：`0.9.0` 当前值，**1.0.0 留待 UX 验收后再定**。之后每次发版 patch 递增（`v1.0.1`、`v1.0.2`…）。
-- 发版要同步的版本位：`manifest.json`、`backend/Cargo.toml`、`backend/Cargo.lock`（`dbx-plugin-warren-polaris-api`）、
+- 发版要同步的版本位：`manifest.json`、`backend/Cargo.toml`、`backend/Cargo.lock`（`dbx-plugin-apifox-polaris-api`）、
   `.dbx-store.json` 的 `releaseNotes`、README 版本历史、`tools/verify.mjs` 的 `const VERSION`。
 - 派生自上游 `misxzaiz/polaris-api` **v0.2.0**，**承诺不再同步上游任何代码**；1.0.0 要把这句写进 README「许可与署名」与包内 `NOTICE`。
 - `v0.6.4` 的商店 PR #557 **已决定撤回**，等 1.0.0 数据格式冻结后一次性上架。
@@ -238,7 +238,7 @@ cd ../verify-ui && node check-s61.mjs && node check-s71.mjs
 | `verify-ui/node_modules`（playwright-core）是 Windows 装的 | **没打进包里**，Mac 上 `cd verify-ui && npm i playwright-core` |
 | 仓库内全是 LF（`i/lf w/lf`），本机 `core.autocrlf=true` | Mac 上设 `git config core.autocrlf input`，否则可能整树显示 modified |
 | `tools/fixtures/messy.http` 必须是 CRLF（436 字节），但 blob 里存的是 LF | 已加 `.gitattributes` 指定 `text eol=crlf`；缺了它 Linux/Mac 上 `fixtures` / `store` 两个测试会红 |
-| `check-s15/s22/s23.mjs` 里 `ROOT` 曾硬编码成 Windows 工作区绝对路径 | 已改成 `path.resolve(..., '..', 'warren-polaris-api')`，与其余脚本一致；`CHROME` 也改为按平台解析（可用 `CHROME=` 覆盖） |
+| `check-s15/s22/s23.mjs` 里 `ROOT` 曾硬编码成 Windows 工作区绝对路径 | 已改成 `path.resolve(..., '..', 'apifox-polaris-api')`，与其余脚本一致；`CHROME` 也改为按平台解析（可用 `CHROME=` 覆盖） |
 | 本机 `git push` 常 502 | 推送技巧在 `tools/push-one.mjs`（走 REST），token 用 `git credential fill` 取、用完删 |
 | 无 `package.json`、无 npm 依赖 | 不需要 `npm install`；测试与 dev server 都是 `node xxx.mjs` 直跑 |
 
@@ -249,8 +249,8 @@ cd ../verify-ui && node check-s61.mjs && node check-s71.mjs
 **A. GitHub（首选，2026-11-20 已推送）**
 
 ```bash
-git clone https://github.com/nianshengmei/warren-polaris-api.git
-cd warren-polaris-api && git log --oneline -1   # 应能看到 a500446 及其后的 S2.5d 提交
+git clone https://github.com/zsky1/apifox-polaris-api.git
+cd apifox-polaris-api && git log --oneline -1   # 应能看到 a500446 及其后的 S2.5d 提交
 ```
 
 代码、20 个提交的历史、本交接单全都在这。缺的只有 `verify-ui/` 和 `dev-workspace/`（见第 1 节）。
@@ -259,7 +259,7 @@ cd warren-polaris-api && git log --oneline -1   # 应能看到 a500446 及其后
 
 ```
 polaris-handoff-20261121-r15.zip   （7.6 MB，685 条目，已校验 UTF-8 文件名 + testzip）
-├── warren-polaris-api/     完整项目，含 .git（已解压实测过：git status 干净、14/14 全绿）
+├── apifox-polaris-api/     完整项目，含 .git（已解压实测过：git status 干净、14/14 全绿）
 ├── verify-ui/              端到端脚本 21 个（不含 node_modules，Mac 上 npm i playwright-core）
 ├── dev-workspace/          调试目录（含 wpa-workspace.json 与两个 .http）
 └── .workbuddy/memory/      工作日志 + 长期约定（值得读 2026-11-21.md）

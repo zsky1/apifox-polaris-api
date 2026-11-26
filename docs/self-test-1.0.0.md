@@ -21,7 +21,7 @@ dbx-plugin dev --path . --port 5190
 node tools/selfuse-pack.mjs   # dist/polaris-1.0.0-<os>-<arch>/ 与同名 .zip
 ```
 
-装完打开插件，工作目录默认是 `~/warren-polaris-api`（首次会自动种 `examples.http`、`sample-upload.txt`、`http-client.env.json`）。
+装完打开插件，工作目录默认是 `~/apifox-polaris-api`（首次会自动种 `examples.http`、`sample-upload.txt`、`http-client.env.json`）。
 
 ---
 
@@ -106,7 +106,7 @@ Sec-WebSocket-Protocol: json
 | 在历史结果弹窗里点某行「打开」 | **弹窗不关**，就地进这条的快照（请求 + 响应，只读黄标）；点「←」或 Esc 回目录，滚动位置不变、刚才那行高亮 | `openDetail` / `backToList` |
 | 删掉 `# @interface_id` 再发 | 顶部问「要不要接回旧历史（N 条）」，点「接回」后 id 换回、历史合并 | `findByIdentity` / `reuse` |
 | 发一个图片接口 | 同目录出现 `<id>-<at>.bin`，jsonl 里只有 `bodyRef/bodyEncoding/bodyBytes` | 宿主无二进制写，`.bin` 里是 base64 |
-| 看 `_history/_meta.json` | `formatVersion: 1`、`app: com.warren.polaris.api` | 只建不覆盖 |
+| 看 `_history/_meta.json` | `formatVersion: 1`、`app: com.fax.apifox` | 只建不覆盖 |
 | `git status` | `_history/` 被忽略（`.gitignore` 自动补了一行） | `ensureGitignore` |
 
 > 想验证「更新版本只读」：把某个 jsonl 的第一行改成 `"v":2` 再发一次——应出现黄条、状态栏说「本版只读」，且文件一个字节都不动。
@@ -175,7 +175,7 @@ node tools/store-meta.mjs --all            # 校验本地所有 v* tag
 ## 12. 收尾
 
 ```bash
-cd warren-polaris-api
+cd apifox-polaris-api
 git status --short      # 应为空；_history/、_results/ 都不该进仓库
 node tools/all.mjs      # 16 个文件全绿
 ```

@@ -37,7 +37,7 @@
   var PAD_TOP = 10;     /* 必须与 CSS 的 --pa-pad-top 一致 */
   function lineH(fs) { return Math.round((fs || S.fontSize || FS_DEF) * LH_RATIO); }
   var GUT_W = 74;       /* gutter 宽（折叠箭头 + ▶ + 行号）；文字左内边距 = GUT_W + 8 */
-  var ST_KEY = 'warren-polaris-api.editor.v1';
+  var ST_KEY = 'apifox.editor.v1';
   var TEXT_EXT = /\.(http|rest|txt|md|json|xml|yml|yaml|graphql|gql)$/i;
   var MAX_HL_LINES = 8000;
   var METHODS_RE = 'GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|TRACE|CONNECT';
@@ -1812,6 +1812,7 @@
       S.loadedText = content;
       await markDiskVersion();           /* 自己写完，基线跟着抬到新版本 */
       afterSave(manual);
+      /* Apifox：源码浮层里改完并落盘后，按文件重新计算差异并回推（模块未配置时自动跳过） */
       renderConflictHint();
       if (manual) toast('已保存到 <b>' + esc(S.name || fileNameOf(S.path)) + '</b> ✓（第 ' + S.saveCount + ' 次）');
       savePrefs();
@@ -2412,7 +2413,7 @@
     if (!S.dir) {
       try {
         var d = await invoke('http/defaultDirs', {});
-        /* workDir = 主目录下的 warren-polaris-api 子目录（拖入/导入副本的落点） */
+        /* workDir = 主目录下的 apifox 子目录（拖入/导入副本的落点） */
         S.dir = d.workDir || d.homeDir || '';
       } catch (e) { }
     }

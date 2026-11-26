@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>warren-polaris-api</title>
+  <title>apifox</title>
   <link rel="stylesheet" href="./app.css" />
 </head>
 <body>
@@ -30,6 +30,7 @@
           <span class="t">工作区 · WORKSPACE</span>
           <button class="mini-btn txt" id="collapseAll" title="折叠所有集合（只影响查看，不改文件）">折叠</button>
           <button class="mini-btn txt" id="expandAll" title="展开所有集合（只影响查看，不改文件）">展开</button>
+          <button class="mini-btn txt" id="apifoxBtn" title="配置 Apifox 并从其拉取接口 / 环境（只读）">⇅ Apifox</button>
         </div>
         <div class="side-search"><input id="search" placeholder="🔍  搜索已保存的请求…" /></div>
         <div class="tree" id="tree"></div>
@@ -132,6 +133,7 @@
   <script src="./workspace-map.js"></script>
   <script src="./dbx-bridge.js"></script>
   <script src="./app.js"></script>
+  <script src="./apifox.js"></script>
   <script src="./http-workspace.js"></script>
   <script src="./sample-http.js"></script>
   <script src="./http-editor.js"></script>

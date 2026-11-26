@@ -1,4 +1,4 @@
-/* app.js — warren-polaris-api 请求客户端：多 tab、集合/分组、环境变量、cURL 导入导出、响应渲染编排。
+/* app.js — apifox 请求客户端：多 tab、集合/分组、环境变量、cURL 导入导出、响应渲染编排。
  * 自原版 relay-devkit tools/api.js 移植，适配 DBX 沙箱：
  *   - 去 cap.http / /__proxy 代理（DBX 无宿主直发通道、无本地中继后端）；
  *   - 网络纯 fetch 直连，受 manifest 声明的 host.network 白名单 + 浏览器 CORS 约束；
@@ -16,7 +16,7 @@ const { parseCurl, toCurl, shortUrl, splitUrl } = window.POLARIS_CURL;
 const DBX = window.DBXBridge;
 
 /* ===================== 状态 + 持久化 ===================== */
-const ST_KEY='warren-polaris-api.state.v2';   // 单键存全部状态（storage 256KiB/值上限足够）
+const ST_KEY='apifox.state.v2';   // 单键存全部状态（storage 256KiB/值上限足够）
 let state={ tabs:[], activeTab:null, collections:[], envs:[], activeEnv:null };
 let dragRid=null;   // 侧边栏正在拖拽的已保存请求 id
 let ui={ sideCollapsed:false, layout:'v', reqH:240, reqW:520, timeoutMs:120000 };
@@ -92,7 +92,7 @@ async function load(){
  * storage 只留 tab / 环境 / 偏好；旧 storage 集合在首次启动时一次性搬成文件。
  * 数据形状不开新路：HttpStore.toLegacyCollections() 把解析结果投影成旧形状。
  */
-const DOCS_KEY='warren-polaris-api.httpws.v1';   // 与 http-workspace.js 共用（映射所在目录 / 结果目录）
+const DOCS_KEY='apifox.httpws.v1';   // 与 http-workspace.js 共用（映射所在目录 / 结果目录）
 const DOCS={ enabled:false, dir:'', store:null, files:[], busy:false, again:false, lastScan:0,
              map:null, mapError:null, mapLoaded:false };
 const STORE=window.POLARIS_STORE;
@@ -111,7 +111,7 @@ async function initDocs(){
   DOCS.store=STORE.createStore(STORE.invokeHost(DBX.invoke),{dir});
   DOCS.enabled=true;
   /* 一次性迁移：storage 里的旧集合 → 每个 collection 一个 .http。
-   * 幂等（目标已存在就留档到 .warren-migrate/，不覆盖），靠 ui.migratedAt 只跑一次。 */
+   * 幂等（目标已存在就留档到 .apifox-migrate/，不覆盖），靠 ui.migratedAt 只跑一次。 */
   if(!ui.migratedAt && state.collections.length){
     try{
       const out=await STORE.migrateFromStorage(DOCS.store,state.collections,{});
@@ -119,7 +119,7 @@ async function initDocs(){
       /* 迁出来的文件也要挂上侧栏 —— 与「打开即挂载」同一条路径（映射未就绪时排队） */
       for(const p of (out.created||[])) await registerDocFile(p,{noRefresh:true});
       if(out.created.length) setStatus('已把 '+out.created.length+' 个旧分组写成 .http 文件 · '+dir,'ok');
-      if(out.skipped.length) toast('有 '+out.skipped.length+' 个同名文件已存在，旧数据留档在 .warren-migrate/');
+      if(out.skipped.length) toast('有 '+out.skipped.length+' 个同名文件已存在，旧数据留档在 .apifox-migrate/');
     }catch(e){ setStatus('迁移旧分组失败：'+(e.message||e),'warn'); }
   }
   await loadEnvsFromFile();
@@ -482,7 +482,7 @@ function multipartBoundaryOf(t){
   const h=(t.headers||[]).find(r=>r.on!==false&&/^content-type$/i.test(r.k||'')&&/multipart\//i.test(r.v||''));
   if(h){ const m=/boundary\s*=\s*(?:"([^"]+)"|([^;]+))/i.exec(h.v); if(m) return String((m[1]!=null?m[1]:m[2])||'').trim(); }
   if(t.mpBoundary) return t.mpBoundary;
-  return H.guessBoundary(null,t.body)||'WarrenBoundary';
+  return H.guessBoundary(null,t.body)||'ApifoxBoundary';
 }
 /* 表单行 → buildMultipart 要的分段结构。file 段只给路径，字节由读文件的那些代码去取。 */
 function mpPartsToSend(t){
@@ -687,6 +687,7 @@ async function saveEnvsToFile(){
       path:STORE.joinPath(DOCS.dir,'http-client.env.json'),
       content:JSON.stringify(envsToFile(),null,2)+'\n'
     });
+    /* Apifox：环境写完立刻回推（模块未加载或未配置时会自己静默返回） */
     return true;
   }catch(e){
     setStatus('环境写入 '+ 'http-client.env.json 失败：'+(e.message||e),'err');
@@ -1784,7 +1785,7 @@ async function send(){
   const streamId='s'+rid;
   let streamPaint=0;
   t.streamBuf=''; t.streamCount=0; t.streamLive=false; t.streamDone=null;
-  const offStream=(DBX&&DBX.onEvent)?DBX.onEvent('polaris/http/stream',(p)=>{
+  const offStream=(DBX&&DBX.onEvent)?DBX.onEvent('apifox/http/stream',(p)=>{
     if(!p||p.requestId!==streamId) return;
     if(t.stopped||t.sendSeq!==seq) return;
     if(p.phase==='open'){
@@ -2289,8 +2290,12 @@ async function appendToDoc(t,path,newFileName,name){
     target=c.path;
   }
   const req=storeReqFromTab(t); req.name=name; req.title=name;
+  /* 关键：新建时必须把身份行写回 .http。否则下次改名/保存找不到 interfaceId，
+   * findRec 会退化成 path+method 匹配，名字一变就被当成「新增」而不是「修改」。 */
+  let iid=null;
+  try{ if(window.POLARIS_APIFOX&&window.POLARIS_APIFOX.newIid) iid=window.POLARIS_APIFOX.newIid(); }catch(e){}
   let res;
-  try{ res=await DOCS.store.appendRequest(target,req); }
+  try{ res=await DOCS.store.appendRequest(target,req,{ interfaceId:iid }); }
   catch(e){ setStatus('写入失败：'+(e.message||e),'err'); return; }
   if(!res.ok){ setStatus('写入失败：'+(res.reason||'')+(res.error?(' · '+res.error):''),'err'); return; }
   t.name=name; t.dirty=false;
@@ -2562,7 +2567,7 @@ function bindImportExport(){
   const ib=$('#importBtn'); if(ib) ib.onclick=()=>$('#fileInput').click();
   const fi=$('#fileInput'); if(fi) fi.onchange=e=>{ const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
     rd.onload=async()=>{ try{ const d=JSON.parse(rd.result); const cols=Array.isArray(d)?d:d.collections; if(!Array.isArray(cols)) throw new Error('格式不符'); cols.forEach(g=>{ g.id=uid(); (g.requests||[]).forEach(r=>r.id=uid()); });
-      /* 文件真源：导入 = 每个分组写成一个 .http 文件（同名不覆盖，旧数据留档 .warren-migrate/） */
+      /* 文件真源：导入 = 每个分组写成一个 .http 文件（同名不覆盖，旧数据留档 .apifox-migrate/） */
       if(DOCS.enabled){
         const out=await STORE.migrateFromStorage(DOCS.store,cols,{});
         if(d.envs&&Array.isArray(d.envs)){ d.envs.forEach(en=>{en.id=uid();}); state.envs=state.envs.concat(d.envs); renderEnv(); persist(); }
@@ -2674,7 +2679,7 @@ async function initApi(){
   // 等 DBX 桥就绪后加载状态并首渲染
   await DBX.ready;
   /* WS 帧是异步推来的：全局订一次，按 tab 分发（连发出去的帧也从这里回来） */
-  if(DBX.onEvent) DBX.onEvent('polaris/http/ws', onWsEvent);
+  if(DBX.onEvent) DBX.onEvent('apifox/http/ws', onWsEvent);
   await load();
   /* 上一轮的 WebSocket 遗留：sidecar 是常驻进程，界面重载（刷新 / 重开面板）后
    * 连接表里的连接仍然活着，但已经没有 tab 认它 —— 事件来了没人接，连接也不会自己断。
@@ -2724,6 +2729,17 @@ window.POLARIS_API = {
     setStatus('已打开结果：'+resp.status+' '+(resp.statusText||''),'ok');
   },
   getActiveTab: activeTab,
+  /* Apifox 同步用：读本地集合 / 环境快照，把拉取到的环境装回内存 */
+  getCollections: function(){ return state.collections; },
+  getEnvSnapshot: function(){ return envsToFile(); },
+  setEnvs: function(list){
+    state.envs=(list||[]).map(function(e){
+      return {id:'env:'+e.name,name:e.name,baseUrl:e.baseUrl||'',vars:(e.vars&&e.vars.length?e.vars:[blankRow()])};
+    });
+    state.activeEnv=state.envs.length?state.envs[0].id:null;
+    ui.envName=state.envs.length?state.envs[0].name:null;
+    persist(); renderEnv(); renderRequestBar();
+  },
   /* 浮层里的 ▶ 要对 WS 也能用：那边没有消息面板，只能把请求交给这里再连 */
   connectActiveWs: function(){
     var t=activeTab();
@@ -2793,6 +2809,11 @@ window.POLARIS_DOCS = {
   mapError: function(){ return DOCS.mapError; },
   /* 挂载：打开 / 新建 .http 后把它登记进侧栏映射 */
   register: function(path){ return registerDocFile(path); },
+  /* Apifox 同步用：拿到 store / host 并保存映射（Do not touch .http outside the store） */
+  store: function(){ return DOCS.store; },
+  host: function(){ return DOCS.store ? DOCS.store.host : null; },
+  saveMap: function(){ return window.POLARIS_MAP.save(DOCS.store.host, DOCS.dir, DOCS.map); },
+  collections: function(){ return state.collections; },
   /* S2.3：源码视图点「▭」→ 在表单里打开这一段 */
   openInForm: function(path,info){ return openInFormForDoc(path,info); },
   /* S2.3：表单右上角「</>」→ 在源码里定位这一段 */

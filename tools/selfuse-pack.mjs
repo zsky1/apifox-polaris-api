@@ -3,12 +3,12 @@
  * 用法（在仓库根）：
  *   cd backend && cargo build --release && cd ..
  *   node tools/selfuse-pack.mjs
- *   node tools/selfuse-pack.mjs --bin /abs/path/to/dbx-plugin-warren-polaris-api
+ *   node tools/selfuse-pack.mjs --bin /abs/path/to/dbx-plugin-apifox
  *   node tools/selfuse-pack.mjs --no-zip
  *
  * 产物：
- *   dist/polaris-<version>-<os>-<arch>/         ← 插件目录（manifest + ui/ + bin/）
- *   dist/polaris-<version>-<os>-<arch>.zip      ← 同上，打包带走
+ *   dist/apifox-<version>-<os>-<arch>/         ← 插件目录（manifest + ui/ + bin/）
+ *   dist/apifox-<version>-<os>-<arch>.zip      ← 同上，打包带走
  *
  * 它**不**生成 .dbxp —— 那要官方 CLI：`dbx-plugin package .`。
  * 脚本会把命令打出来；装了 CLI 就跑一下，没装也能直接拿目录跑 `dbx-plugin dev --path .`。
@@ -32,7 +32,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'u
 const version = manifest.version;
 const exeName = manifest.entrypoints.backend.executable.split('/').pop();
 const osName = process.platform === 'win32' ? 'windows' : process.platform === 'darwin' ? 'macos' : 'linux';
-const tag = `polaris-${version}-${osName}-${process.arch}`;
+const tag = `apifox-${version}-${osName}-${process.arch}`;
 const dist = path.join(root, 'dist');
 const stage = path.join(dist, tag);
 
@@ -52,7 +52,7 @@ if (binSize < 512 * 1024) {
 const cargoToml = fs.readFileSync(path.join(root, 'backend', 'Cargo.toml'), 'utf8');
 const cargoVer = (cargoToml.match(/^version\s*=\s*"([^"]+)"/m) || [])[1];
 const lock = fs.readFileSync(path.join(root, 'backend', 'Cargo.lock'), 'utf8');
-const lockBlock = lock.split(/\n\[\[package\]\]\n/).find((b) => b.includes('name = "dbx-plugin-warren-polaris-api"')) || '';
+const lockBlock = lock.split(/\n\[\[package\]\]\n/).find((b) => b.includes('name = "dbx-plugin-apifox"')) || '';
 const lockVer = (lockBlock.match(/^version\s*=\s*"([^"]+)"/m) || [])[1];
 if (cargoVer !== version || lockVer !== version) {
   console.error(`版本位不一致：manifest=${version} Cargo.toml=${cargoVer} Cargo.lock=${lockVer}`);
@@ -72,7 +72,7 @@ fs.copyFileSync(bin, path.join(stage, 'bin', exeName));
 fs.chmodSync(path.join(stage, 'bin', exeName), 0o755);
 
 fs.writeFileSync(path.join(stage, 'INSTALL.txt'), [
-  `warren-polaris-api ${version} · 自用构建（${osName}-${process.arch}）`,
+  `apifox ${version} · 自用构建（${osName}-${process.arch}）`,
   '',
   '这个目录就是插件本体：manifest.json + ui/ + bin/。',
   `sidecar 二进制：bin/${exeName}（${(binSize / 1048576).toFixed(1)} MB，本机架构）`,

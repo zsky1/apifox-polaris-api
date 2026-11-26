@@ -568,7 +568,7 @@
     };
   }
 
-  /* 幂等迁移：目标文件已存在就**不覆盖**，把旧 JSON 原样留档到 `.warren-migrate/`。
+  /* 幂等迁移：目标文件已存在就**不覆盖**，把旧 JSON 原样留档到 `.apifox-migrate/`。
    * 返回 { created, skipped, archived }，调用方据此决定是否提示用户。 */
   async function migrateFromStorage(store, collections, opts) {
     opts = opts || {};
@@ -581,7 +581,7 @@
       var target = joinPath(store.dir(), name + '.http');
       var st = await store.host.stat(target);
       if (st && st.exists) {
-        var adir = joinPath(store.dir(), '.warren-migrate');
+        var adir = joinPath(store.dir(), '.apifox-migrate');
         await store.host.ensureDir(adir);
         var apath = joinPath(adir, name + '.json');
         await store.host.write(apath, JSON.stringify(c, null, 2));

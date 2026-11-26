@@ -173,7 +173,7 @@
   /* parts → body 文本。字段名里的 `"` 折成 `'`（RFC 7578 的 filename 同理），
    * 跟发送侧 buildMultipart 的转义保持同一套规则，避免「看着一样、发出去不一样」。 */
   function mpToBody(parts, boundary) {
-    var B = String(boundary || '').trim() || 'WarrenBoundary';
+    var B = String(boundary || '').trim() || 'ApifoxBoundary';
     var out = [];
     (parts || []).forEach(function (p) {
       if (!p || p.on === false) return;
@@ -205,7 +205,7 @@
 
   /* body 文本 → parts（表单行）。filePath 有值就是文件段，否则按文本段。 */
   function mpFromBody(body, boundary, mkId) {
-    var B = String(boundary || '').trim() || guessBoundary(null, body) || 'WarrenBoundary';
+    var B = String(boundary || '').trim() || guessBoundary(null, body) || 'ApifoxBoundary';
     var mp = parseMultipart(body, B);
     var n = 0;
     return (mp.parts || []).map(function (p) {

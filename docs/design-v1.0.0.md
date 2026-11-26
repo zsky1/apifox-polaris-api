@@ -21,7 +21,7 @@
 ## 2. 核心模型
 
 ```
-<工作区>/                      ← 放映射文件的地方，默认 ~/warren-polaris-api/
+<工作区>/                      ← 放映射文件的地方，默认 ~/apifox-polaris-api/
 ├── wpa-workspace.json        ← 侧栏映射：哪些文件、归哪个文件夹、什么顺序
 ├── 用户中心.http              ← collection = 文件
 ├── 订单.http                  ← collection = 文件
@@ -159,7 +159,7 @@ Authorization: Bearer {{token}}
 
 1. 每个分组写成 `<分组名>.http`（重名加 `-2`，非法字符 `\/:*?"<>|` → `_`）；
 2. 每个请求按第 3 节序列化，params 拼进 URL；
-3. 原 JSON 导出到 `~/warren-polaris-api/_migrated-collections.json` 作备份；
+3. 原 JSON 导出到 `~/apifox-polaris-api/_migrated-collections.json` 作备份；
 4. storage 里清掉 `collections`，写入 `migrated.v1 = true`。
 
 迁移本身幂等：中途失败可重跑，已存在的文件不覆盖（走 `-2` 命名）。
@@ -212,7 +212,7 @@ Authorization: Bearer {{token}}
 
 ## 11. 待确认
 
-1. **资源目录**：直接用 `~/warren-polaris-api/`（与 `examples.http` 同级），还是单独 `collections/` 子目录？我倾向前者 —— 文件夹即工作区，配上「选择目录」可以整体换。
+1. **资源目录**：直接用 `~/apifox-polaris-api/`（与 `examples.http` 同级），还是单独 `collections/` 子目录？我倾向前者 —— 文件夹即工作区，配上「选择目录」可以整体换。
 2. **文件名**：保留中文原名（`用户中心.http`），还是转 slug（`user-center.http`）？我倾向保留中文，只替换 Windows 非法字符。
 3. **排序**：collection 顺序按文件名排序，还是允许拖拽排序并写进文件？我倾向按文件名 + 侧栏可手动拖拽（顺序只存 storage，不改文件）。
 4. **旧 JSON 导入导出按钮**：保留（作为备份通道），还是一并去掉、只留文件？我倾向保留到 1.1。
@@ -292,7 +292,7 @@ Authorization: Bearer {{token}}
 ### 13.2 布局：一个接口一个 jsonl（定稿）
 
 ```
-~/.warren-polaris-api/
+~/.apifox-polaris-api/
 ├── 用户中心.http                  ← collection = 一个 .http 文件（不目录化）
 ├── 订单.http
 ├── .gitignore                     ← 首次创建时自动写入 `_history/`

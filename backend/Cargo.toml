@@ -1,6 +1,6 @@
 [package]
-name = "dbx-plugin-warren-polaris-api"
-version = "1.0.0"
+name = "dbx-plugin-apifox"
+version = "1.1.0"
 edition = "2021"
 license = "Apache-2.0"
 

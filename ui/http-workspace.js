@@ -18,7 +18,7 @@
   var DBX = window.DBXBridge;
   var esc = function (s) { return CORE && CORE.esc ? CORE.esc(s) : String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
-  var ST_KEY = 'warren-polaris-api.httpws.v1';
+  var ST_KEY = 'apifox.httpws.v1';
   /* 面板里有两层视图（S8.4）：
    *   list   —— 历史结果目录
    *   detail —— 某一条的快照（只读）
@@ -646,7 +646,7 @@
       try {
         var d = await invokeSafe('http/defaultDirs', {});
         if (!WS.resultsDir) WS.resultsDir = d.resultsDir || '';
-        /* 与侧栏的「资源目录」保持一致：优先 ~/warren-polaris-api（default_work_dir），
+        /* 与侧栏的「资源目录」保持一致：优先 ~/apifox（default_work_dir），
          * 只有拿不到时才退回用户主目录 —— 两处各扫一个目录，用户会看到两套集合。 */
         if (!WS.workDir) WS.workDir = d.workDir || d.homeDir || '';
       } catch (e) { /* 保留已有配置 */ }

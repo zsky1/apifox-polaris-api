@@ -77,7 +77,7 @@ ok('S6.1 SSE 分支也查标志（长连接最容易卡住）', () => {
 
 ok('S6.1 取消后返回已读部分，并标记 cancelled / truncated', () => {
   const body = requestBody();
-  assert.match(body, /eprintln!\("\[polaris-api\] request cancelled at \{\} bytes", bytes\.len\(\)\)/);
+  assert.match(body, /eprintln!\("\[apifox\] request cancelled at \{\} bytes", bytes\.len\(\)\)/);
   assert.match(body, /"cancelled": cancelled/);
   assert.match(body, /"truncated":/);
 });

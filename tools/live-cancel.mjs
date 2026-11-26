@@ -40,7 +40,7 @@ const SSE_EVENTS = 11;
 function findBin() {
   if (process.env.BIN) return process.env.BIN;
   const exe = process.platform === 'win32' ? '.exe' : '';
-  const name = 'dbx-plugin-warren-polaris-api' + exe;
+  const name = 'dbx-plugin-apifox' + exe;
   /* 取最新编出来的那个：debug 刚编、release 还停在旧版本时，别拿旧产物测新代码 */
   const hits = [
     path.join(root, 'backend/target/release', name),
@@ -152,7 +152,7 @@ function startSidecar() {
 }
 
 /* ---------- 主流程 ---------- */
-const tmpBase = path.join(os.tmpdir(), 'polaris-cancel-' + process.pid);
+const tmpBase = path.join(os.tmpdir(), 'apifox-cancel-' + process.pid);
 const cancelDir = path.join(tmpBase, '_cancel');
 const cancelPath = path.join(cancelDir, 'q-live-1.flag');
 rmSync(tmpBase, { recursive: true, force: true });

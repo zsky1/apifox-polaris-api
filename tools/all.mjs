@@ -23,6 +23,7 @@ const files = [
   'tools/multipart.test.mjs',
   'tools/sample.test.mjs',
   'tools/cancel.test.mjs',
+  'tools/apifox-front.test.mjs',
 ];
 
 let failed = 0;

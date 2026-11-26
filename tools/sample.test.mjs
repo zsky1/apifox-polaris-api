@@ -51,7 +51,7 @@ ok((form.headers || []).some(h => /^content-type$/i.test(h.k) && /x-www-form-url
 /* multipart */
 const mp = reqs[3];
 ok(mp.bodyType === 'multipart', 'multipart 识别成功，实际 ' + mp.bodyType);
-ok(mp.multipart && mp.multipart.boundary === 'WarrenBoundary', 'boundary 正确');
+ok(mp.multipart && mp.multipart.boundary === 'ApifoxBoundary', 'boundary 正确');
 ok(mp.multipart && mp.multipart.parts.length === 3, '3 个分段（audio/scene/meta）');
 const audio = (mp.multipart.parts || []).find(p => p.name === 'audio');
 ok(!!audio && audio.filePath === '{{audioPath}}', 'audio 分段引用 @audioPath 变量');

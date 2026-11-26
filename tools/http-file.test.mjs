@@ -219,7 +219,7 @@ ok('multipart 表单：boundary 认 header 优先，其次 body，都没有就�
   assert.equal(H.guessBoundary([], '--FromBody\nContent-Disposition: form-data; name="a"\n\nx\n--FromBody--'), 'FromBody');
   assert.equal(H.guessBoundary([], ''), '');
   const body = H.mpToBody([{ on: true, name: 'a', kind: 'text', v: '1' }], '');
-  assert.match(body, /^--WarrenBoundary$/m, '空 boundary 要兜底成 WarrenBoundary');
+  assert.match(body, /^--ApifoxBoundary$/m, '空 boundary 要兜底成 ApifoxBoundary');
 });
 
 /* ===================== WebSocket（S8.5） ===================== */

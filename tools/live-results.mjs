@@ -25,7 +25,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 function findBin() {
   if (process.env.BIN) return process.env.BIN;
   const exe = process.platform === 'win32' ? '.exe' : '';
-  const name = 'dbx-plugin-warren-polaris-api' + exe;
+  const name = 'dbx-plugin-apifox' + exe;
   const hits = [
     path.join(root, 'backend/target/release', name),
     path.join(root, 'backend/target/debug', name),
@@ -71,7 +71,7 @@ function startSidecar() {
 }
 
 /* ---------- 工具 ---------- */
-const TMP = mkdtempSync(path.join(os.tmpdir(), 'polaris-results-'));
+const TMP = mkdtempSync(path.join(os.tmpdir(), 'apifox-results-'));
 const jsonFiles = (dir) => readdirSync(dir).filter((f) => f.endsWith('.json')).sort();
 const entryOf = (name, sourceFile) => ({
   request: { name, method: 'POST', url: 'https://example.test/x', headers: {}, body: '', bodyType: 'none', sourceFile },

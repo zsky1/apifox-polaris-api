@@ -136,7 +136,7 @@ node dev/dev-server.mjs        # 打开 http://127.0.0.1:8899/ ；换端口用 P
 
 - **目标**：storage 里已有的 collections JSON → 每个 collection 一个 `.http` 文件，**幂等**（跑两次结果一样，不重复建）。
 - **改动**：`ui/http-store.js` 加 `migrateFromStorage()`；`ui/app.js` boot 时调用一次，成功后写 `ui.migratedAt`。
-- **冲突规则**：目标文件已存在 → 不覆盖，改写 `名称.json` 到 `.warren-migrate/` 留档，并在界面提示。
+- **冲突规则**：目标文件已存在 → 不覆盖，改写 `名称.json` 到 `.apifox-migrate/` 留档，并在界面提示。
 - **验收**：`tools/migrate.test.mjs`：构造 3 collection / 12 请求的旧 JSON，迁移后断言"请求数、方法、URL、body 一字不差"，再跑一次断言文件数不变。
 - **量级**：约 +90 行。
 
@@ -392,7 +392,7 @@ node dev/dev-server.mjs        # 打开 http://127.0.0.1:8899/ ；换端口用 P
 
 | 步骤 | 内容 | 验收 |
 |---|---|---|
-| S7.0 | 撤回 PR #557（close，不合并）；fork 分支 `submit/com.warren.polaris.api-0.6.3` 保留作参考，不发新版本 | PR 状态 closed、未 merged；商店 catalog 里没有 `com.warren.polaris.api` |
+| S7.0 | 撤回 PR #557（close，不合并）；fork 分支 `submit/com.fax.apifox-0.6.3` 保留作参考，不发新版本 | PR 状态 closed、未 merged；商店 catalog 里没有 `com.fax.apifox` |
 | S7.1 ✅ | **数据格式冻结**（见下），写进 `docs/data-format.md` 并作为 1.0.0 的一部分发布 | 文档里每个字段都有「类型 / 必填 / 语义 / 兼容规则」；`tools/history.test.mjs` 用 `tools/fixtures/history-v1/*.jsonl` 断言向后兼容 |
 | S7.2 | 版本位齐改：`manifest.json`、`Cargo.toml`、`Cargo.lock`、`.dbx-store.json`、README 历史、`verify.mjs` 的 `VERSION` | `grep -r 0.6.4 src ui backend manifest.json` 无残留 |
 | S7.3 | tag `v1.0.0` + Release → CI 5 平台 | 6 个产物齐全 |
@@ -400,7 +400,7 @@ node dev/dev-server.mjs        # 打开 http://127.0.0.1:8899/ ；换端口用 P
 | S8.2 ✅ | **0.9.1 全平台安装包**：版本位 0.9.0 → 0.9.1（manifest / Cargo.toml / Cargo.lock / verify 常量四处一致），打 tag `v0.9.1` 走 reusable workflow 出 5 平台 `.dbxp` | 五个包全部 `completed/success`；包内 manifest `version=0.9.1`；`windows-x64` 是 PE、`darwin-arm64` 是 Mach-O。本版内容 = 0.9.0 + S8.1 | 
 | S8.1 ✅ | **multipart 用表单编辑**（Postman 那种）：Body 第 5 型「文件」，一行一个字段，第三列选「文本 / 文件」；文件格点一下调 sidecar 的 `http/pickFile`（Windows PowerShell/WinForms、macOS osascript、Linux zenity），只显示 basename、`.http` 里存路径（在文件目录下写相对路径）。表单 ⇄ 文本共用同一份 `t.body`，切来切去不丢改动 | `http-file.js` 新增 `mpToBody` / `mpFromBody` / `guessBoundary`；`http-store.js` 的 `bodyTypeMap` 保留 multipart 并带 `mpParts`（以前会降级成 text，表单直接退化成原始文本）；发送走 `bodyBase64`，附件不经过文本化；`buildMultipart` 接受 `opts.baseDir` 给表单复用 | 新增 `verify-ui/check-s81.mjs` 26 项（渲染 / 保存回相对路径 / 文本视图一致 / 10 字节原始附件不被改写 / pickFile 写相对路径）；`http-file.test` 28 → 31；`verify.mjs` 64 → 65 |
 | S7.7 ✅ | **0.9.0 预发布上机包**：tag `v0.9.0` + Release（prerelease）→ reusable workflow 出 5 平台 `.dbxp` | 五个包齐全（1.6–1.8 MB）：`darwin-arm64` / `darwin-x64` / `linux-arm64` / `linux-x64` / `windows-x64`；`release-candidates.json` 里 version=0.9.0、permissions 含 `host.events`；`windows-x64` 包内 `bin/windows-x64/*.exe` 是 PE（`MZ`）、`darwin-arm64` 包内是 Mach-O（`cf fa ed fe`） |
-| S7.4 | **新开**商店 PR（不复活 #557）：`candidates/com.warren.polaris.api.json` 指向 v1.0.0 五平台产物 + `publishers/warren.json` | 候选 sha256/size 与 release 一致；PR 里只有一个候选版本 |
+| S7.4 | **新开**商店 PR（不复活 #557）：`candidates/com.fax.apifox.json` 指向 v1.0.0 五平台产物 + `publishers/fax.json` | 候选 sha256/size 与 release 一致；PR 里只有一个候选版本 |
 | S7.6 ✅ | **跨平台可构建**：`dbx-plugin-sdk` 没发布到 crates.io，原来靠本机一份副本 + `--config patch` 才能编，换台机器第一步就报 `no matching package`。vendor 进 `backend/vendor/`（Apache-2.0，仅删 `[workspace]`）并 `exclude` 出 workspace；覆盖写改成「旧目标先挪 `.bak`、失败挪回」；原子写 tmp 名唯一化；`normSlash` 折叠重复斜杠并保 UNC | 新增 `tools/fs-contract.test.mjs`（18 项）；`verify.mjs` 63 → 64；新增 `.github/workflows/cross-platform.yml`，ubuntu / windows / macos 三平台跑 `node tools/all.mjs` + `cargo build --release`。首跑 Windows 红了三处（缺 `eol=lf`、Cargo.lock 按 `\n` 分割、rename 覆盖语义假设错），已修 |
 | S7.5 ✅ | **浮层导航收口**（发版前的 UI 收尾）：删掉 `.http` 浮层里的「接口一览」整栏（DOM / CSS / `renderOutline` / `trackCaret` 连根拔），编辑器铺满；新增 `followSource()`——浮层开着时点侧栏接口 / 切 tab，源码换文件并跳到那一段的行（`openAt` 加 `quiet` 不重扫侧栏）；源码 → 表单链路用 `suppressFollow` 计数防回流 | `verify.mjs` 63 项；`verify-ui/check-s25c.mjs` 18 项（断言左栏与开关都已不存在、编辑器宽度 = 浮层宽度）、`check-s23.mjs` 19 项、新增 `check-s73.mjs` 15 项（跨文件跟随 / 切 tab 跟随 / 收起后不弹） |
 
@@ -411,7 +411,7 @@ node dev/dev-server.mjs        # 打开 http://127.0.0.1:8899/ ；换端口用 P
 | `.http` 文件 | 只使用 `#` 注释：`# @file_id`（文件级，首个 `###` 之前）、`# @interface_id`（段落级，`###` 下一行）。**不引入任何新指令语法**，IDEA / VS Code 一律按注释处理 | 后续新增元信息也只能用 `# @key value` 形态；已有两个 key 的语义永不变 |
 | `http-client.env.json` | 沿用 IDEA 原生结构（`{ "envName": { "k": "v" } }`），不扩展字段 | 只读兼容；写回时保持原排版 |
 | `_history/<collection>/<接口>.jsonl` | 一行一条调用记录，**每条首字段 `v`（格式版本，1.0.0 = 1）**，字段集见设计稿 13.4 | **只加字段、不改字段语义、不删字段**；读到未知字段原样保留，读到 `v` 大于自身则只读展示并提示升级 |
-| `_history/_meta.json` | `{ "formatVersion": 1, "app": "com.warren.polaris.api", "createdAt": "…" }` | 迁移时据此判断是否需要升级，避免逐文件嗅探 |
+| `_history/_meta.json` | `{ "formatVersion": 1, "app": "com.fax.apifox", "createdAt": "…" }` | 迁移时据此判断是否需要升级，避免逐文件嗅探 |
 | `_history/**.bin` | 原始响应字节，文件名 `2026-11-20T12-56-01.bin`，jsonl 里用 `bodyRef` 引用 | 只增不删；缺失时降级为「响应体未保存」 |
 | 资源目录 | `.gitignore` 自动写入 `_history/` | 不覆盖用户已有行 |
 

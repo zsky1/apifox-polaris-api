@@ -23,7 +23,7 @@
   var HISTORY_DIR = '_history';
   var FORMAT_VERSION = 1;            /* S7.1 冻结：jsonl 每行的 `v` 字段，也是 _meta.json 的 formatVersion */
   var META_NAME = '_meta.json';      /* `_history/_meta.json`：整份历史的格式版本，迁移时先看它 */
-  var APP_ID = 'com.warren.polaris.api';
+  var APP_ID = 'com.fax.apifox';
   var MAX_LINES = 10;                /* 每个接口保留几条：用户 2026-11-20 拍板 = 10 */
   var MAX_RETRY = 2;                 /* 冲突后最多再试 2 次（共 3 次写） */
   var BIN_TRY = 20;                  /* .bin 重名时最多往后找 20 个序号 */

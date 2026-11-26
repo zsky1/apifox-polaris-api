@@ -127,13 +127,13 @@ Content-Type: application/json
 ## 3. `_history/_meta.json`
 
 ```json
-{"formatVersion":1,"app":"com.warren.polaris.api","createdAt":"2026-11-21T01:40:00.000Z"}
+{"formatVersion":1,"app":"com.fax.apifox","createdAt":"2026-11-21T01:40:00.000Z"}
 ```
 
 | 字段 | 类型 | 必填 | 语义 | 兼容规则 |
 |---|---|---|---|---|
 | `formatVersion` | number | 是 | 整份历史的格式版本，1.0.0 = `1` | 只增 |
-| `app` | string | 是 | 固定 `com.warren.polaris.api`，防止误读别人的目录 | 永不变 |
+| `app` | string | 是 | 固定 `com.fax.apifox`，防止误读别人的目录 | 永不变 |
 | `createdAt` | string | 是 | 首次建立时的 ISO 8601 时间 | 永不变 |
 
 **写入规则**
@@ -236,7 +236,7 @@ Content-Type: application/json
 
 | 项 | 值 |
 |---|---|
-| 事件名 | `polaris/http/stream` |
+| 事件名 | `apifox/http/stream` |
 | 通道 | 插件 stdout（JSON-RPC 通知）→ 宿主 `host.events` → iframe `postMessage({source:"dbx-host",version:1,type:"event",method,params})` |
 | 权限 | `manifest.json` 必须声明 `host.events` |
 | 顺序 | 同一请求内严格按 `seq` 递增；`seq` 只用于排查，UI 按到达顺序拼接 |

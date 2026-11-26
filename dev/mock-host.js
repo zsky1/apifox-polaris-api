@@ -64,7 +64,7 @@
         try { obj = JSON.parse(data); } catch (e) { continue; }
         if (name === 'result') result = obj;
         else if (name === 'fail') failure = obj.error || '流式请求失败';
-        else window.postMessage({ source: 'dbx-host', version: 1, type: 'event', method: 'polaris/http/stream', params: obj }, '*');
+        else window.postMessage({ source: 'dbx-host', version: 1, type: 'event', method: 'apifox/http/stream', params: obj }, '*');
       }
     }
     if (failure) throw new Error(failure);
@@ -72,7 +72,7 @@
     return result;
   }
 
-  var STATE_KEY = LS_PREFIX + 'warren-polaris-api.state.v2';
+  var STATE_KEY = LS_PREFIX + 'apifox.state.v2';
   var BOOT_KEY = LS_PREFIX + 'booted';
 
   /* 首次打开时，把 dev-workspace/http-client.env.json 里的环境灌进初始状态。
@@ -109,7 +109,7 @@
       return call(method, params);
     },
 
-    setTitle: function (t) { document.title = t || 'warren-polaris-api'; },
+    setTitle: function (t) { document.title = t || 'apifox'; },
 
     onContext: function () { /* 调试模式下上下文不变 */ },
 

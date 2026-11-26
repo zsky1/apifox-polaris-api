@@ -1,4 +1,4 @@
-// backend/src/main.rs — warren-polaris-api sidecar：原生 HTTP 请求代理 + 本地 .http 文件 / 结果仓库。
+// backend/src/main.rs — apifox sidecar：原生 HTTP 请求代理 + 本地 .http 文件 / 结果仓库。
 //
 // 沙箱 UI 受 CSP/CORS 限制，无法发任意 URL 请求、也无法直接读本地文件。
 // 本 sidecar 以本机 OS 用户权限运行：reqwest 发请求、std::fs 读写 .http 与结果文件。
@@ -6,7 +6,7 @@
 //
 // 方法一览：
 //   http/request          原有：reqwest 发送任意 HTTP 请求
-//   warren-polaris-api/ping  健康检查
+//   apifox/ping  健康检查
 //   http/defaultDirs       返回默认结果目录与用户主目录
 //   http/listFiles         扫描目录下的 .http / .rest 文件
 //   http/readFile          读取一个文本文件（.http、外部 body 文件等）
@@ -22,10 +22,11 @@
 //   http/getResult         读取某次完整结果
 //   http/deleteResult      删除某次结果
 //   http/revealDir         在系统文件管理器中打开结果目录
-//   ws/connect             建立 WebSocket 长连接（帧走 polaris/http/ws 事件）
+//   ws/connect             建立 WebSocket 长连接（帧走 apifox/http/ws 事件）
 //   ws/send                往连接里发一条消息
 //   ws/close               断开连接
 //   ws/list                列出还活着的连接（UI 重载后清点用）
+//   apifox/*               Apifox 接口树 / 环境同步（见 apifox.rs）
 
 use std::collections::HashMap;
 use std::fs;
@@ -35,6 +36,8 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use std::sync::{Arc, Mutex, MutexGuard, OnceLock};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+
+mod apifox;
 
 use dbx_plugin_sdk::{PluginEmitter, PluginError, PluginHandler, PluginMetadata, PluginServer, RequestContext};
 use serde_json::{json, Value};
@@ -56,9 +59,9 @@ impl PluginHandler for PolarisApi {
     ) -> Result<Value, PluginError> {
         match method {
             "http/request" => handle_request(params, emitter),
-            "warren-polaris-api/ping" => Ok(json!({
+            "apifox/ping" => Ok(json!({
                 "ok": true,
-                "plugin": "com.warren.polaris.api",
+                "plugin": "com.fax.apifox",
                 "version": env!("CARGO_PKG_VERSION"),
             })),
             "http/defaultDirs" => handle_default_dirs(),
@@ -80,6 +83,8 @@ impl PluginHandler for PolarisApi {
             "ws/send" => handle_ws_send(params),
             "ws/close" => handle_ws_close(params),
             "ws/list" => handle_ws_list(),
+            m if m.starts_with("apifox/") => apifox::handle(m, &params, emitter)
+                .unwrap_or_else(|| Err(PluginError::method_not_found(m))),
             _ => Err(PluginError::method_not_found(method)),
         }
     }
@@ -105,16 +110,16 @@ fn now_nanos() -> u32 {
 fn default_results_dir() -> PathBuf {
     if let Ok(p) = std::env::var("DBX_PLUGIN_DATA_DIR") {
         if !p.is_empty() {
-            return PathBuf::from(p).join("com.warren.polaris.api").join("results");
+            return PathBuf::from(p).join("com.fax.apifox").join("results");
         }
     }
     if let Ok(p) = std::env::var("LOCALAPPDATA") {
-        return PathBuf::from(p).join("DBX").join("plugins").join("com.warren.polaris.api").join("results");
+        return PathBuf::from(p).join("DBX").join("plugins").join("com.fax.apifox").join("results");
     }
     if let Ok(p) = std::env::var("HOME") {
         return PathBuf::from(p)
             .join(".local").join("share").join("dbx").join("plugins")
-            .join("com.warren.polaris.api").join("results");
+            .join("com.fax.apifox").join("results");
     }
     PathBuf::from("results")
 }
@@ -135,10 +140,10 @@ fn user_home() -> PathBuf {
         .unwrap_or_else(|_| PathBuf::from("."))
 }
 
-/// 默认工作目录：主目录下的 warren-polaris-api（拖入/导入时的副本落点，首次访问时创建）。
+/// 默认工作目录：主目录下的 apifox（拖入/导入时的副本落点，首次访问时创建）。
 /// 用独立子目录而不是直接拿主目录，避免把一个 .http 副本丢进 C:\Users\xxx 根下。
 fn default_work_dir() -> PathBuf {
-    let p = user_home().join("warren-polaris-api");
+    let p = user_home().join("apifox");
     let _ = fs::create_dir_all(&p);
     p
 }
@@ -885,7 +890,7 @@ const READ_CHUNK: usize = 64 * 1024;
 /// 单个 SSE 事件在内存里最多攒这么多：对端一直不发空行时先切一刀，避免无上限堆积。
 const MAX_PENDING: usize = 256 * 1024;
 /// 订阅式流的事件名。宿主按 `host.events` 权限转发到 iframe 的 message 事件。
-const STREAM_EVENT: &str = "polaris/http/stream";
+const STREAM_EVENT: &str = "apifox/http/stream";
 
 /// 在缓冲区里找一个完整 SSE 事件的结尾（含分隔空行），返回「切到哪」。
 /// 支持 LF LF 与 CRLF CRLF 两种写法。找不到返回 None。
@@ -964,7 +969,7 @@ fn handle_request(params: Value, emitter: &PluginEmitter) -> Result<Value, Plugi
     let body_type = params.get("bodyType").and_then(Value::as_str).unwrap_or("text");
     let timeout_ms = params.get("timeoutMs").and_then(Value::as_u64).unwrap_or(120_000);
     /* 订阅式流：UI 给一个 streamRequestId 并置 stream=true，后端把 SSE 事件
-     * 逐块发到 `polaris/http/stream` 事件上。没有 id 或没开就照旧一次性返回。 */
+     * 逐块发到 `apifox/http/stream` 事件上。没有 id 或没开就照旧一次性返回。 */
     let stream_id = params
         .get("streamRequestId")
         .and_then(Value::as_str)
@@ -1246,7 +1251,7 @@ fn handle_request(params: Value, emitter: &PluginEmitter) -> Result<Value, Plugi
         (buf, true)
     };
     if cancelled {
-        eprintln!("[polaris-api] request cancelled at {} bytes", bytes.len());
+        eprintln!("[apifox] request cancelled at {} bytes", bytes.len());
     }
     let time_ms = start.elapsed().as_millis() as u64;
 
@@ -1325,7 +1330,7 @@ use base64::Engine;
  */
 
 /// 帧事件名。宿主按 `host.events` 权限转发到 iframe 的 message 事件。
-const WS_EVENT: &str = "polaris/http/ws";
+const WS_EVENT: &str = "apifox/http/ws";
 /// 读线程的「拍」：既要发送及时，也不能空转烧 CPU。
 const WS_TICK_MS: u64 = 200;
 /// 单帧上限。host.events 的单条消息有 8 MiB 硬顶，一条大二进制帧会把整条
@@ -1631,7 +1636,7 @@ fn handle_ws_list() -> Result<Value, PluginError> {
 }
 
 fn main() -> std::io::Result<()> {
-    let metadata = PluginMetadata::new("com.warren.polaris.api", env!("CARGO_PKG_VERSION"))
+    let metadata = PluginMetadata::new("com.fax.apifox", env!("CARGO_PKG_VERSION"))
         .with_capability("events");
     PluginServer::new(metadata, PolarisApi).serve()
 }

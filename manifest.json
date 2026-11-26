@@ -1,11 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/t8y2/dbx/main/plugins/manifest.schema.json",
   "manifest_version": 1,
-  "id": "com.warren.polaris.api",
-  "name": "warren-polaris-api",
-  "version": "1.0.0",
-  "publisher": "warren",
-  "description": "API 请求客户端（sidecar 版），misxzaiz/polaris-api 的社区 fork：专注本地 .http / .rest 文件的原位源码编辑——打开即显示请求源码，每个请求首行左侧有 ▶，点击即发，结果显示在原响应框；改动自动保存回原文件。支持 ### 分隔、@变量、插值、http-client.env.json、跨请求引用、multipart 上传、SSE 流式响应与 WebSocket 长连接。请求经 Rust sidecar（reqwest）发送，无 CORS/混合内容/禁发头限制，等效 cURL。",
+  "id": "com.fax.apifox",
+  "name": "apifox-polaris-api",
+  "version": "1.1.0",
+  "publisher": "fax",
+  "description": "Apifox 只读拉取版 API 请求客户端（Rust sidecar）：本插件是基于上游 fork 二次开发（见 NOTICE 署名），在其本地 .http 编辑能力之上，新增从 Apifox 只读拉取接口树与环境到本地（不回写 Apifox）。保留 .http 原位源码编辑、多 tab、环境变量、cURL 导入导出、multipart、SSE / WebSocket。请求经 sidecar（reqwest）发送，无 CORS / 混合内容 / 禁发头限制，等效 cURL。",
   "icon": "assets/plugin.svg",
   "permissions": [
     "host.storage",
@@ -17,7 +17,7 @@
   },
   "entrypoints": {
     "backend": {
-      "executable": "bin/dbx-plugin-warren-polaris-api"
+      "executable": "bin/windows-x64/dbx-plugin-apifox.exe"
     },
     "ui": {
       "root": "ui",
@@ -27,20 +27,20 @@
   "contributions": [
     {
       "type": "workbench",
-      "id": "com.warren.polaris.api.workbench",
-      "label": "warren-polaris-api",
-      "description": "API 请求客户端：直接编辑本地 .http 源码并自动保存，每个请求左侧 ▶ 一点即发，结果显示在原响应框；多 tab、环境变量、cURL 导入导出，sidecar 原生发送。",
+      "id": "com.fax.apifox.workbench",
+      "label": "apifox-polaris-api",
+      "description": "API 请求客户端：本地 .http 源码编辑、一点即发、从 Apifox 只读拉取接口树与环境。",
       "icon": "assets/plugin.svg"
     }
   ],
   "localizations": {
     "zh-CN": {
-      "name": "warren-polaris-api",
-      "description": "API 请求客户端（sidecar 版），polaris-api 的社区 fork：以源码方式编辑本地 IDEA .http / .rest 文件并自动保存；每个请求左侧 ▶ 一点即发，结果显示在原响应框。另有多 tab、环境变量、cURL 导入导出、响应多视图与 WebSocket 长连接。",
+      "name": "apifox-polaris-api",
+      "description": "Apifox 只读拉取版 API 请求客户端：本地 .http 源码编辑、一点即发，支持从 Apifox 只读拉取接口树与环境到本地，不回写。",
       "contributions": {
-        "com.warren.polaris.api.workbench": {
-          "label": "warren-polaris-api",
-          "description": "API 请求客户端：多 tab、环境变量、cURL 导入导出、响应多视图，sidecar 原生发送。"
+        "com.fax.apifox.workbench": {
+          "label": "apifox-polaris-api",
+          "description": "API 请求客户端：.http 源码编辑、多 tab、环境变量、cURL、SSE / WebSocket，并从 Apifox 只读拉取接口与环境。"
         }
       }
     }

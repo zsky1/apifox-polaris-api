@@ -9,7 +9,7 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 let pass = 0;
 function ok(name, fn) { fn(); pass++; console.log('  ok  ' + name); }
 function read(p) { return fs.readFileSync(path.join(root, p), 'utf8'); }
@@ -19,10 +19,10 @@ ok(`manifest.json 是合法 JSON 且版本为 ${VERSION}`, () => {
   const m = JSON.parse(read('manifest.json'));
   assert(m.manifest_version === 1, 'manifest_version');
   assert(m.version === VERSION, 'version=' + m.version);
-  assert(m.id === 'com.warren.polaris.api', 'id');
-  assert(m.name === 'warren-polaris-api', 'name');
-  assert(m.publisher === 'warren', 'publisher');
-  assert(m.entrypoints.backend.executable === 'bin/dbx-plugin-warren-polaris-api', 'executable');
+  assert(m.id === 'com.fax.apifox', 'id');
+  assert(m.name === 'apifox-polaris-api', 'name');
+  assert(m.publisher === 'fax', 'publisher');
+  assert(m.entrypoints.backend.executable === 'bin/windows-x64/dbx-plugin-apifox.exe', 'executable');
   assert(m.entrypoints && m.entrypoints.backend && m.entrypoints.ui, 'entrypoints');
   assert(Array.isArray(m.contributions) && m.contributions.length, 'contributions');
   assert(Array.isArray(m.permissions) && m.permissions.includes('host.storage'), 'permissions');
@@ -34,7 +34,7 @@ ok('Cargo.toml 版本与插件一致', () => {
 
 ok('Cargo.lock 的包自身版本与 Cargo.toml 一致', () => {
   const lock = read('backend/Cargo.lock');
-  const m = lock.match(/name = "dbx-plugin-warren-polaris-api"\r?\nversion = "([^"]+)"/);
+  const m = lock.match(/name = "dbx-plugin-apifox"\r?\nversion = "([^"]+)"/);
   assert(m, 'Cargo.lock 缺少包条目');
   assert(m[1] === VERSION, `Cargo.lock=${m[1]} 与 Cargo.toml=${VERSION} 不一致（--locked 编译会失败）`);
 });
@@ -119,7 +119,7 @@ ok('WebSocket：与 HTTP 共用 tab，长连接走事件（S8.5）', () => {
   assert(/function wsAppendFrame[\s\S]{0,400}appendChild/.test(app), '帧必须 append，不能整块重建');
 
   const rs = read('backend/src/main.rs');
-  ['"ws/connect"', '"ws/send"', '"ws/close"', '"ws/list"', 'polaris/http/ws']
+  ['"ws/connect"', '"ws/send"', '"ws/close"', '"ws/list"', 'apifox/http/ws']
     .forEach(k => assert(rs.includes(k), '后端缺少 ' + k));
   assert(/set_read_timeout/.test(rs), '读线程要有超时，否则断开后醒不过来');
   assert(/WS_MAX_FRAME/.test(rs), '单帧要有上限（事件通道 8 MiB 硬顶）');
@@ -514,10 +514,10 @@ ok('v0.6.3：打开文件停在第一行', () => {
   assert(/ta\.scrollTop = 0/.test(doc), 'setDoc 要把滚动归零');
 });
 
-ok('v0.6.4：图标/文案/署名与上游可区分', () => {
+ok('图标/文案/署名与上游可区分（apifox-polaris-api 蓝紫标）', () => {
   const svg = read('assets/plugin.svg');
   assert(!/#6d5dfc|#2b6de8/i.test(svg), '图标不能沿用上游的紫蓝渐变');
-  assert(/14b8a6|0b5f57/i.test(svg), '图标应为本 fork 的青绿色板');
+  assert(/#3b5bdb|#7048e8/i.test(svg), '图标应为 apifox-polaris-api 的蓝紫标');
   const notice = read('NOTICE');
   assert(/misxzaiz/i.test(notice), 'NOTICE 要署名上游作者');
   assert(/v0\.2\.0/.test(notice), 'NOTICE 要写明派生自 v0.2.0');
@@ -842,7 +842,7 @@ ok('0.9.0：四个版本位一致，自用包脚本与验收清单在位', () =>
   const lock = read('backend/Cargo.lock');
   /* Cargo.lock 在 Windows 上可能被 core.autocrlf 检出成 CRLF：分割要认 \r?\n，
    * 否则整份 lock 被当成一个 block，读到的是 lock 自己的 format version。 */
-  const block = lock.split(/\r?\n\[\[package\]\]\r?\n/).find((b) => b.includes('name = "dbx-plugin-warren-polaris-api"')) || '';
+  const block = lock.split(/\r?\n\[\[package\]\]\r?\n/).find((b) => b.includes('name = "dbx-plugin-apifox"')) || '';
   const lockVer = (block.match(/^version\s*=\s*"([^"]+)"/m) || [])[1];
   assert(cargoVer === m.version, `Cargo.toml=${cargoVer} manifest=${m.version}`);
   assert(lockVer === m.version, `Cargo.lock=${lockVer} manifest=${m.version}`);
@@ -886,7 +886,7 @@ ok('S6.4 订阅式流：SSE 走事件通道，不再攒到最后', () => {
   assert((mf.permissions || []).includes('host.events'), 'manifest 必须声明 host.events，否则宿主 forwardEvent 直接丢');
 
   const rs = read('backend/src/main.rs');
-  assert(/const STREAM_EVENT: &str = "polaris\/http\/stream"/.test(rs), '事件名要固定成 polaris/http/stream');
+  assert(/const STREAM_EVENT: &str = "apifox\/http\/stream"/.test(rs), '事件名要固定成 apifox/http/stream');
   assert(/fn sse_event_end/.test(rs), '要按事件边界切，不能按任意字节切');
   assert(/emitter\.event\(\s*STREAM_EVENT/.test(rs), '正文块必须经 emitter.event 推出去');
   assert(/"streamed": true/.test(rs), '流式返回体要标 streamed，UI 才知道正文在事件里');
@@ -898,7 +898,7 @@ ok('S6.4 订阅式流：SSE 走事件通道，不再攒到最后', () => {
 
   const app = read('ui/app.js');
   assert(/streamRequestId/.test(app) && /stream:\s*true/.test(app), '发送时要带 stream/streamRequestId');
-  assert(/DBX\.onEvent\('polaris\/http\/stream'/.test(app), 'UI 要订阅这个事件名');
+  assert(/DBX\.onEvent\('apifox\/http\/stream'/.test(app), 'UI 要订阅这个事件名');
   assert(/function renderStreamPane/.test(app), '流式视图要单独渲染，别去动正常的响应子页');
   assert(/t\.streamDone/.test(app), '要等 done 事件再定稿（事件与 RPC 响应是两条路）');
   assert(/if\(!p\|\|p\.requestId!==streamId\) return;/.test(app), '多个 tab 同时流时要按 requestId 路由');
@@ -985,6 +985,30 @@ ok('S8.1 multipart 用表单编辑：字段可选文本/文件，文件只露 ba
   assert(/function buildMultipart\(req, rv, opts\)/.test(ed), 'buildMultipart 要接受 opts.baseDir');
   assert(/opts && opts\.baseDir/.test(ed), 'buildMultipart 要优先用调用方给的 baseDir');
   assert(/buildMultipart:\s*buildMultipart/.test(ed), 'buildMultipart 要导出给表单用');
+});
+
+ok('Apifox 只读：UI 与后端均不提供任何回写入口', () => {
+  const af = read('ui/apifox.js');
+  const app = read('ui/app.js');
+  const ed = read('ui/http-editor.js');
+  const rs = read('backend/src/apifox.rs');
+
+  /* 前端不导出回写钩子，也不挂载写入按钮 */
+  assert(!/onApiWritten|onEnvsWritten|onSourceSaved|pushAll/.test(af), 'apifox.js 不得含回写函数');
+  assert(!/autoPush|afAuto|afPush|推送本地改动/.test(af), 'apifox.js 不得含自动同步/推送入口');
+  assert(!/POLARIS_APIFOX\.onApiWritten|POLARIS_APIFOX\.onEnvsWritten/.test(app), 'app.js 不得调用回写钩子');
+  assert(!/POLARIS_APIFOX\.onSourceSaved/.test(ed), 'http-editor.js 不得调用源码回写钩子');
+  assert(/只从 Apifox 拉取|只读/.test(af), '配置弹窗要说明插件是只读的');
+
+  /* 后端 RPC 分发不得出现写操作 */
+  for (const m of ['createApi', 'updateApi', 'deleteApi', 'createEnvironment', 'updateEnvironment', 'deleteEnvironment', 'importOpenapi']) {
+    assert(!new RegExp('"apifox/' + m + '"').test(rs), '后端不得分发 apifox/' + m);
+  }
+  assert(!/fn mutate_api|fn mutate_environment|fn import_openapi/.test(rs), '后端不得保留写入函数');
+  /* 只读入口必须保留 */
+  for (const m of ['getApiTree', 'listEnvironments', 'diagnoseSync', 'exportOpenapi']) {
+    assert(rs.includes('"apifox/' + m + '"'), '后端必须保留只读入口 apifox/' + m);
+  }
 });
 
 console.log('\n' + pass + ' checks passed');

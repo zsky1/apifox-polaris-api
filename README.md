@@ -1,6 +1,10 @@
-# warren-polaris-api
+# apifox-polaris-api
 
-DBX 插件 `com.warren.polaris.api` —— API 请求客户端（Rust sidecar 版）。
+DBX 插件 `com.fax.apifox` —— Apifox 只读拉取版 API 请求客户端（Rust sidecar 版）。
+
+源码仓库：https://github.com/zsky1/apifox-polaris-api
+
+本插件基于上游 fork 二次开发（原作者署名见 NOTICE），ID 为 `com.fax.apifox`，显示名 `apifox-polaris-api`，与上游插件互不冲突。
 
 基于 [misxzaiz/polaris-api](https://github.com/misxzaiz/polaris-api)（`com.polaris.api`）**0.2.0** 拉取并二次开发。
 
@@ -28,7 +32,7 @@ DBX 插件 `com.warren.polaris.api` —— API 请求客户端（Rust sidecar �
 
 **v0.6.3：打开就从第一行看起** —— 之前载入文件后 textarea 的光标落在末尾，`focus()` 把视图滚到最后一行；现在载入后光标与滚动都归零，示例打开即是文件头。
 
-**v0.6.2：自带一份能直接跑的示例** —— 第一次打开时把 `examples.http` 放进默认目录 `~/warren-polaris-api`（8 个请求：GET / POST JSON / 表单 / multipart 上传 / SSE / 跨请求引用 / 动态变量），启动仍然只挂右缘箭头；SSE 支持流式读取（最多 10 秒，收多少显示多少）。
+**v0.6.2：自带一份能直接跑的示例** —— 第一次打开时把 `examples.http` 放进默认目录 `~/apifox-polaris-api`（8 个请求：GET / POST JSON / 表单 / multipart 上传 / SSE / 跨请求引用 / 动态变量），启动仍然只挂右缘箭头；SSE 支持流式读取（最多 10 秒，收多少显示多少）。
 
 **v0.6.1：`打开 .http` 只弹文件对话框** —— 取消就什么都不发生，选中确认后才展开浮层；启动时若还记得上次的文件，只在右缘留一颗**灰色半透明箭头**作为入口，不主动把界面顶出来。
 
@@ -93,7 +97,7 @@ DBX 插件 `com.warren.polaris.api` —— API 请求客户端（Rust sidecar �
 
 ### 结果保存与历史
 
-- **结果目录**：默认 `%LOCALAPPDATA%\DBX\plugins\com.warren.polaris.api\results`（Linux/macOS 为 `~/.local/share/dbx/plugins/com.warren.polaris.api/results`），可手动改。每次运行都会自动写入一个 JSON 文件，包含完整请求快照与响应体。
+- **结果目录**：默认 `%LOCALAPPDATA%\DBX\plugins\com.fax.apifox\results`（Linux/macOS 为 `~/.local/share/dbx/plugins/com.fax.apifox/results`），可手动改。每次运行都会自动写入一个 JSON 文件，包含完整请求快照与响应体。
 - **每个接口只留最近 10 份**（v0.9.4）：写完新的一份就把该接口更早的删掉，与 `_history` 的 10 条一致——否则调用越多目录越胀，而且历史轮转掉的那些结果文件再没人读。分组认「请求名 + 所在 `.http`」：两个文件里都叫「元数据接口」也不会互相挤。老记录的结果被回收后再点「详情」，会提示「结果文件不存在（每个接口只留最近 10 份，更早的已回收）」。
 - **历史结果**：顶栏「◷ 历史结果」列出本机已保存的结果，点「打开」即用原有响应视图重新渲染；也可「删除」或「打开目录」。
 - 结果写入本地文件而不是 `host.storage`，因为后者单值 256 KiB、插件总量 1 MiB，装不下真实响应体。sidecar 以当前用户权限运行，本地文件读写无需额外 manifest 权限。
@@ -148,7 +152,7 @@ DBX 插件 `com.warren.polaris.api` —— API 请求客户端（Rust sidecar �
 
 ### 首次打开：默认目录里带一份示例
 
-第一次用（还没有可恢复的上次文件）时，插件会在默认工作目录 `~/warren-polaris-api` 里放两个文件，并把 `examples.http` 当作默认打开的文件——启动**只挂右缘箭头**，点箭头就能看到：
+第一次用（还没有可恢复的上次文件）时，插件会在默认工作目录 `~/apifox` 里放两个文件，并把 `examples.http` 当作默认打开的文件——启动**只挂右缘箭头**，点箭头就能看到：
 
 | # | 请求 | 演示什么 |
 | --- | --- | --- |
@@ -170,12 +174,12 @@ DBX 插件 `com.warren.polaris.api` —— API 请求客户端（Rust sidecar �
 
 ### 完整示例：`examples.http`
 
-下面就是启动时写进 `~/warren-polaris-api/examples.http` 的原文（`@audioPath` 那行在真实文件里是本机 `sample-upload.txt` 的绝对路径，这里给个示意值）。想更快上手：整段复制存成 `demo.http`，用「▤ 打开 .http」打开它，从第 1 条开始点 ▶。
+下面就是启动时写进 `~/apifox/examples.http` 的原文（`@audioPath` 那行在真实文件里是本机 `sample-upload.txt` 的绝对路径，这里给个示意值）。想更快上手：整段复制存成 `demo.http`，用「▤ 打开 .http」打开它，从第 1 条开始点 ▶。
 
 <!-- SAMPLE:BEGIN -->
 ```http
 # ============================================================================
-#  warren-polaris-api · .http 示例集
+#  apifox · .http 示例集
 #  这个文件是插件第一次打开时自动放到默认目录的样例，可以随便改、随便删。
 #
 #  怎么玩：
@@ -248,9 +252,9 @@ Authorization: Bearer {{token}}
 POST {{baseUrl}}/post
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-X-Client: warren-polaris-api
+X-Client: apifox
 
-grant_type=password&username=warren&password=123456&remember=true&nonce={{$randomInt}}
+grant_type=password&username=apifox&password=123456&remember=true&nonce={{$randomInt}}
 
 ### 4. POST · multipart/form-data · 上传音频做声纹
 # @name uploadVoice
@@ -262,24 +266,24 @@ grant_type=password&username=warren&password=123456&remember=true&nonce={{$rando
 #   · 分段之间空一行，最后以 --boundary-- 收尾
 #   · 附件路径写绝对路径（或本文件里的变量），< 后面留一个空格
 POST {{baseUrl}}/post
-Content-Type: multipart/form-data; boundary=WarrenBoundary
+Content-Type: multipart/form-data; boundary=ApifoxBoundary
 Accept: application/json
 
---WarrenBoundary
+--ApifoxBoundary
 Content-Disposition: form-data; name="audio"; filename="sample.wav"
 Content-Type: audio/wav
 
 < {{audioPath}}
---WarrenBoundary
+--ApifoxBoundary
 Content-Disposition: form-data; name="scene"
 
 voiceprint
---WarrenBoundary
+--ApifoxBoundary
 Content-Disposition: form-data; name="meta"
 Content-Type: application/json
 
 {"familyId":"1900000000000001","sampleRate":16000}
---WarrenBoundary--
+--ApifoxBoundary--
 
 ### 5. SSE · OpenAI 风格流式对话（data: 逐块 + data: [DONE]）
 # @name chatStream
@@ -350,7 +354,7 @@ WEBSOCKET wss://echo.websocket.org
 Accept: */*
 Sec-WebSocket-Protocol: chat
 
-{"type":"hello","from":"warren-polaris-api"}
+{"type":"hello","from":"apifox"}
 
 # ----------------------------------------------------------------------------
 #  几个踩过的坑
@@ -367,7 +371,7 @@ Sec-WebSocket-Protocol: chat
 ### SSE（`text/event-stream`）
 
 - 请求头写了 `Accept: text/event-stream`，或响应 `Content-Type` 是 `text/event-stream` 时按流式处理；
-- **界面是逐块蹦出来的**：sidecar 每切出一个完整事件（空行结尾）就用 `polaris/http/stream` 事件推给 UI，响应区边收边画、自动滚到底，⏹ 随时能停；
+- **界面是逐块蹦出来的**：sidecar 每切出一个完整事件（空行结尾）就用 `apifox/http/stream` 事件推给 UI，响应区边收边画、自动滚到底，⏹ 随时能停；
 - 走的是宿主的 **`host.events`** 通道（`manifest.json` 已声明）。单条事件只有几 KB，**总量不受「单条 JSON 消息 8 MiB」限制** —— 流多长都行，「10 秒 / 512 KiB」这两道墙没有了；
 - 时长改由**「请求超时」**控制（默认 120 秒），不再固定 10 秒；到点仍会标「SSE 已截断」；
 - 老宿主没转发事件时会**自动退回** `512 KiB / sseMs` 的一次性返回：界面至少还有内容，不会空白（状态栏会提示「流式事件没到界面」）；
@@ -440,7 +444,7 @@ Content-Disposition: form-data; name="audio"; filename="x.wav"
 ## 架构
 
 ```
-warren-polaris-api/
+apifox/
 ├── manifest.json          # DBX manifest v1，含 backend + ui entrypoint
 ├── dbx-plugin.toml        # 打包配置（Rust backend）
 ├── backend/               # Rust sidecar：stdio-jsonl 协议
@@ -493,6 +497,19 @@ node tools/selfuse-pack.mjs      # → dist/polaris-<version>-<os>-<arch>/
 
 本机安装未签名的开发包：DBX → 插件中心 → 设置 → 第三方与开发者选项 → 允许安装未签名开发包，再选择本地 `.dbxp`。
 
+## Apifox 只读拉取（v1.1.0）
+
+侧栏顶部「⇅ Apifox」打开配置面板，填 **Project ID** 与 **Access Token**（可选自定义 `X-Apifox-Api-Version` / `X-Client-Version`），然后：
+
+1. **测试连接** —— 用内部 `GET /api/v1/projects/{projectId}/http-apis?pageSize=1` 验证 token / 项目 ID。
+2. **从 Apifox 拉取** —— 三方择优（`api-tree-list` / 内部 `http-apis` 全量 / 官方 `export-openapi`）拿到最全的接口树，按 Apifox 目录写成 `Apifox-<目录>.http` 并按原有流程挂载到侧栏；环境写入 `http-client.env.json`。
+3. **诊断数量** —— 显示接口树 / 内部列表 / OpenAPI 三方数量，便于确认是否拉全。
+4. **本地编辑不回写** —— 本插件是**只读**的：拉取后的文件与本地文件没有区别，用表单或 `.http` 源码编辑、新增、删除、改名完全走原项目流程，**不会写回 Apifox**。后端 RPC 层面也没有任何写入入口（createApi / updateApi / deleteApi / 环境增删改 / importOpenapi 全部移除）。
+
+为什么是只读：Apifox 官方开放 API 只有 3 个接口——导入 OpenAPI、导入 Postman、导出 OpenAPI——**没有**单接口增删改，也没有接口列表与环境写入接口；内部私有 API 分页不可靠且 OpenAPI 导出不带真实接口 ID（用 `METHOD /path` 伪 ID），单接口精确回写无法保证。与其给出不可靠的"同步"，不如明确只读拉取。
+
+实现边界：原项目的文件真源、映射规则、调用历史、SSE / WebSocket 全部保持不变；Apifox 只作为上游数据源。Token 只存在插件本地配置，不写入 `.http`、不随事件上报。
+
 ## 发布
 
 GitHub Release published → `.github/workflows/plugin-release.yml` 自动为所有目标平台编译 unsigned candidate，产出 `release-candidates.json`。DBX Store 审查签名后上架。
@@ -509,6 +526,7 @@ GitHub Release published → `.github/workflows/plugin-release.yml` 自动为所
 
 ## 版本历史
 
+- **v1.1.0** — **更名为 apifox（`com.fax.apifox`）并与 apifox-polaris-api 完全隔离**；**Apifox 只读拉取**：保留原项目全部功能，新增从 Apifox 拉取接口树 / 环境到本地，不回写 Apifox；Rust sidecar 提供 `apifox/*` 只读 RPC（三方择优：api-tree-list / http-apis / OpenAPI），前端新增 `ui/apifox.js` 与侧栏「⇅ Apifox」入口。
 - **v1.0.0** — **第一个正式版：功能收口**：
   - **侧栏顶部那排图标全删了**（＋ 新建 / ↻ 重读 / ↧ 导入 / ↥ 导出）。文件真源下它们已经冗余：新建与挂载在侧栏底部有「＋ 挂载 .http」「＋ 新建文件夹」，外部改动靠窗口 focus 自动重扫，集合 JSON 的导入导出在「文件即源」之后没有意义。四个 26px 方框还把「工作区 · WORKSPACE」挤得只剩一条缝。
   - **换成「折叠」「展开」两个纯前端开关**：一键收起 / 展开所有集合（含文件夹）。只改内存里的 `collapsed` 与 `ui.collapsed`，**不写 `wpa-workspace.json`、不动任何 `.http`**；搜索框有词时先清空，否则列表本来就是全展开的，点了像没反应。
@@ -562,7 +580,7 @@ GitHub Release published → `.github/workflows/plugin-release.yml` 自动为所
   - 版本号沿用本 fork 自己的历史，不与上游 0.2.0 比较（发布说明里也写了这句）。
 - **v0.6.3** — **打开文件停在第一行**：`setDoc()` 赋值后光标落在末尾，随后的 `focus()` 把视图滚到文件末行（示例打开直接看到「踩过的坑」那一节）。现在赋值后 `setSelectionRange(0,0)` 并把 `scrollTop/scrollLeft` 归零。
 - **v0.6.2** — **带上能直接跑通的示例，SSE 也能真的看流**：
-  - 首次打开自动在默认目录 `~/warren-polaris-api` 写 `examples.http` + `sample-upload.txt`（`noClobber`，不覆盖），并作为默认恢复目标（仍然只挂箭头，不展开浮层）；上次文件失效时回落到示例
+  - 首次打开自动在默认目录 `~/apifox-polaris-api` 写 `examples.http` + `sample-upload.txt`（`noClobber`，不覆盖），并作为默认恢复目标（仍然只挂箭头，不展开浮层）；上次文件失效时回落到示例
   - 示例覆盖 GET / POST JSON / 表单 / multipart 上传 / SSE / 跨请求引用 / 动态变量，共 8 节，默认打 `httpbin.org`，只改两行即可指向自己的服务；不含任何真实凭据
   - **SSE**：`Accept: text/event-stream` 或响应是 `text/event-stream` 时走流式读取，最多 10 秒 / 512 KiB，收多少显示多少；响应区标「SSE 已结束 / 已截断」，OpenAI 风格 `data: … / data: [DONE]` 可直接看
   - multipart 分段里的附件路径支持 `{{变量}}`（`@audioPath` 那样传）
@@ -588,10 +606,10 @@ GitHub Release published → `.github/workflows/plugin-release.yml` 自动为所
   - **语法着色**：`###` 标题、方法、URL（协议/主机/路径/query 键值）、Header 名值、`{{变量}}`、`<`/`>` 指令、`{% %}` 脚本分色；Body JSON 的 key / 字符串 / 数字 / 布尔 / null / 标点各自配色。实现方式是 textarea 文字透明 + 底层 `<pre>` 逐行同步绘制（字体度量、行高、宽度完全一致，光标零偏移）。
   - **折叠**：JSON 对象/数组与整段请求可折叠，行尾提示「⋯ N 行已折叠」。折叠是**视图投影**（`S.text` 才是权威文本），保存/发送永远用完整原文；折叠状态下编辑会自动展开，避免写丢内容。
   - 标题规则明确为「连续 3 个及以上 `#` + 空格/Tab + 名称」，`####`、`#####…` 同样生效。
-- **v0.4.0** — 打开与保存闭环：顶栏「打开 .http」/ 面板「📂 打开」直接弹**系统文件对话框**（sidecar `http/pickFile`，拿到绝对路径 → 原地保存）；支持**从应用外拖入文件**打开（HTML5 drop + 宿主 `fileTransfer.onDrop`，无路径时按同名+同大小认领工作目录原文件，认不到则复制副本）；「保存」**可反复点**且显示「×N」，未绑定磁盘自动转「另存为」；新增「另存为」；修复 `.http` 模式下 `Ctrl+S` 同时触发请求 tab 保存弹窗的问题；默认工作目录改为 `~/warren-polaris-api`（拖入副本不再落到家目录根下）
+- **v0.4.0** — 打开与保存闭环：顶栏「打开 .http」/ 面板「📂 打开」直接弹**系统文件对话框**（sidecar `http/pickFile`，拿到绝对路径 → 原地保存）；支持**从应用外拖入文件**打开（HTML5 drop + 宿主 `fileTransfer.onDrop`，无路径时按同名+同大小认领工作目录原文件，认不到则复制副本）；「保存」**可反复点**且显示「×N」，未绑定磁盘自动转「另存为」；新增「另存为」；修复 `.http` 模式下 `Ctrl+S` 同时触发请求 tab 保存弹窗的问题；默认工作目录改为 `~/apifox-polaris-api`（拖入副本不再落到家目录根下）
 - **v0.3.3** — 侧边栏管理能力补齐：非 `.http` 的已保存请求支持**重命名**（悬停 ✎ 或双击名称，并同步已打开的 tab 标题）与**拖拽移动/排序**（拖到其他分组即移动，拖到条目上/下边缘可插入到该位置，拖到分组头或空白区追加到末尾）；修复保存弹窗两个 bug——「＋ 新建分组…」改为**内联输入框**（原先嵌套 `PD.ask` 会被外层 `close()` 连同弹窗一起清空，点了没反应），名称输入在**中文输入法选词时按 Enter** 不再被误当成提交（`isComposing` / `keyCode 229` 保护）
 - **v0.3.2** — `.http` 改为「源码编辑器」形态：直接以文件格式打开、可编辑、自动保存 / 手动保存回原文件；每个请求首行左侧 ▶ 一点即发，结果显示在**原响应框**（`POLARIS_API.runRaw` → `showResponse`）；sidecar 新增 `http/writeFile`
 - **v0.3.1** — 修复 DBX 沙箱内「新建分组 / 重命名 / 删除确认」等全部失效的问题：iframe 没有 `allow-modals`，原生 `prompt/confirm` 被静默禁用，全部替换为自定义 DOM 模态框（`ui/dialogs.js` 的 `PD.ask` / `PD.confirm`）
-- **v0.3.0** — 第一个公开版：支持本地 `.http` / `.rest` 文件（`###` 分段、`@变量`、`{{插值}}`）、`http-client.env.json` 环境变量、跨请求引用（`{{name.response.body.$.x}}`）与「运行全部」；请求结果自动落盘并可在面板里打开；请求经 Rust sidecar 发出，没有 CORS / 混合内容 / 禁发头的限制；更名为 `warren-polaris-api`（fork 自 misxzaiz/polaris-api）
+- **v0.3.0** — 第一个公开版：支持本地 `.http` / `.rest` 文件（`###` 分段、`@变量`、`{{插值}}`）、`http-client.env.json` 环境变量、跨请求引用（`{{name.response.body.$.x}}`）与「运行全部」；请求结果自动落盘并可在面板里打开；请求经 Rust sidecar 发出，没有 CORS / 混合内容 / 禁发头的限制；更名为 `apifox-polaris-api`（fork 自 misxzaiz/polaris-api）
 - **v0.2.0** — 架构重写：请求从「浏览器里发」改成「本地 Rust 进程发」（sidecar），一次解决 v0.1.x 的跨域、混合内容与浏览器禁发头三个问题，行为等效 cURL
 - **v0.1.x** — universal 前端插件（纯浏览器侧，API 资产库方向）。受 CORS 与禁发头限制，发不出很多真实接口，这条路线已被 v0.2.0 的 sidecar 架构取代

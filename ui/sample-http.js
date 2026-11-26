@@ -5,7 +5,7 @@
  */
 (function () {
   var HTTP = String.raw`# ============================================================================
-#  warren-polaris-api · .http 示例集
+#  apifox · .http 示例集
 #  这个文件是插件第一次打开时自动放到默认目录的样例，可以随便改、随便删。
 #
 #  怎么玩：
@@ -78,9 +78,9 @@ Authorization: Bearer {{token}}
 POST {{baseUrl}}/post
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-X-Client: warren-polaris-api
+X-Client: apifox
 
-grant_type=password&username=warren&password=123456&remember=true&nonce={{$randomInt}}
+grant_type=password&username=apifox&password=123456&remember=true&nonce={{$randomInt}}
 
 ### 4. POST · multipart/form-data · 上传音频做声纹
 # @name uploadVoice
@@ -92,24 +92,24 @@ grant_type=password&username=warren&password=123456&remember=true&nonce={{$rando
 #   · 分段之间空一行，最后以 --boundary-- 收尾
 #   · 附件路径写绝对路径（或本文件里的变量），< 后面留一个空格
 POST {{baseUrl}}/post
-Content-Type: multipart/form-data; boundary=WarrenBoundary
+Content-Type: multipart/form-data; boundary=ApifoxBoundary
 Accept: application/json
 
---WarrenBoundary
+--ApifoxBoundary
 Content-Disposition: form-data; name="audio"; filename="sample.wav"
 Content-Type: audio/wav
 
 < {{audioPath}}
---WarrenBoundary
+--ApifoxBoundary
 Content-Disposition: form-data; name="scene"
 
 voiceprint
---WarrenBoundary
+--ApifoxBoundary
 Content-Disposition: form-data; name="meta"
 Content-Type: application/json
 
 {"familyId":"1900000000000001","sampleRate":16000}
---WarrenBoundary--
+--ApifoxBoundary--
 
 ### 5. SSE · OpenAI 风格流式对话（data: 逐块 + data: [DONE]）
 # @name chatStream
@@ -180,7 +180,7 @@ WEBSOCKET wss://echo.websocket.org
 Accept: */*
 Sec-WebSocket-Protocol: chat
 
-{"type":"hello","from":"warren-polaris-api"}
+{"type":"hello","from":"apifox"}
 
 # ----------------------------------------------------------------------------
 #  几个踩过的坑
@@ -194,7 +194,7 @@ Sec-WebSocket-Protocol: chat
 `;
 
   var ATTACH = [
-    'warren-polaris-api 示例附件',
+    'apifox 示例附件',
     '',
     '这个文件是 4 号请求（multipart/form-data）用的附件，',
     '换成你自己的 .wav 音频路径，就能真的上传音频做声纹。',

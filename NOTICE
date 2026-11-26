@@ -1,7 +1,9 @@
-warren-polaris-api
-Copyright 2026 warren
+apifox-polaris-api
+Copyright 2026 zsky1
 
-This plugin is a derivative work of polaris-api (DBX plugin id com.polaris.api),
+This plugin is a derivative work of the upstream polaris-api fork warren-polaris-api
+(DBX plugin id com.warren.polaris.api), Copyright 2026 warren, which is itself a derivative of
+polaris-api (DBX plugin id com.polaris.api),
 Copyright 2026 misxzaiz, https://github.com/misxzaiz/polaris-api,
 which is licensed under the Apache License, Version 2.0.
 
@@ -12,8 +14,8 @@ Upstream version this fork starts from: polaris-api v0.2.0
 (https://github.com/misxzaiz/polaris-api/tree/v0.2.0), commit history of the
 upstream project prior to the fork is retained in this repository.
 
-Changes made in this fork (plugin id com.warren.polaris.api, name
-warren-polaris-api, display name "HTTP File Client (.http)"):
+Changes made in this fork (plugin id com.fax.apifox, name
+apifox-polaris-api, display name "apifox-polaris-api"):
 
 - renamed the plugin and its workbench;
 - added an in-place .http / .rest source editor: syntax highlighting, JSON
@@ -23,6 +25,8 @@ warren-polaris-api, display name "HTTP File Client (.http)"):
 - added multipart/form-data request bodies with byte-exact file parts;
 - added streamed text/event-stream (SSE) responses with a size/time cap;
 - new icon and rewritten store listing text;
+- from v1.1.0 this fork adds read-only pull of Apifox API trees and environments
+  (no writes back to Apifox), via new Rust RPC methods and ui/apifox.js;
 - from v1.0.0 the fork no longer tracks upstream: it adds `# @file_id` /
   `# @interface_id` comments (plain comments, non-standard, honoured by this
   plugin only), per-interface call history under `_history/`, and a history

@@ -10,7 +10,7 @@
  */
 import { execFileSync } from 'node:child_process';
 
-const REPO = 'nianshengmei/warren-polaris-api';
+const REPO = 'zsky1/apifox-polaris-api';
 const BRANCH = 'main';
 const TOKEN = process.env.GITHUB_TOKEN;
 if (!TOKEN) { console.error('missing GITHUB_TOKEN env'); process.exit(1); }
@@ -20,7 +20,7 @@ const HDRS = {
   Authorization: `Bearer ${TOKEN}`,
   Accept: 'application/vnd.github+json',
   'X-GitHub-Api-Version': '2022-11-28',
-  'User-Agent': 'warren-polaris-api-push',
+  'User-Agent': 'apifox-polaris-api-push',
   'Content-Type': 'application/json',
 };
 

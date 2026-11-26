@@ -120,13 +120,13 @@ async function main() {
     assert.deepEqual(fs.readdirSync(dir).filter((n) => n.endsWith('.http')).sort(), before.filter((n) => n.endsWith('.http')).sort());
   });
 
-  await ok('目标文件已存在：不覆盖，旧 JSON 留档到 .warren-migrate/', async () => {
+  await ok('目标文件已存在：不覆盖，旧 JSON 留档到 .apifox-migrate/', async () => {
     const p = path.join(dir, '用户中心.http');
     const mine = '# 我自己写的\n### 手写接口\nGET https://me.local/x\n';
     fs.writeFileSync(p, mine, 'utf8');
     const r = await S.migrateFromStorage(store, old);
     assert.equal(fs.readFileSync(p, 'utf8'), mine, '用户的文件不能被覆盖');
-    assert.ok(r.archived.some((a) => a.endsWith('.warren-migrate\\用户中心.json') || a.endsWith('.warren-migrate/用户中心.json')));
+    assert.ok(r.archived.some((a) => a.endsWith('.apifox-migrate\\用户中心.json') || a.endsWith('.apifox-migrate/用户中心.json')));
     const archived = JSON.parse(fs.readFileSync(r.archived[0], 'utf8'));
     assert.equal(archived.requests.length, 4, '留档里要保住完整旧数据');
   });
