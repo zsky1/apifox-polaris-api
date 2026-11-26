@@ -34,32 +34,32 @@
     {
       "target": "darwin-arm64",
       "url": "https://github.com/zsky1/apifox-polaris-api/releases/download/v1.1.0/com.zsky1.apifox-1.1.0-darwin-arm64.dbxp",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "size": 0
+      "sha256": "59b3f5d4c1dcc33d7b18a9f1369d7414da51e5c3f6a655d0637050298e268d84",
+      "size": 1828017
     },
     {
       "target": "darwin-x64",
       "url": "https://github.com/zsky1/apifox-polaris-api/releases/download/v1.1.0/com.zsky1.apifox-1.1.0-darwin-x64.dbxp",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "size": 0
+      "sha256": "4631111a9108621c2dab58cbfb776eb0f70b22195ec675beb81341fa5dd21916",
+      "size": 1935703
     },
     {
       "target": "linux-arm64",
       "url": "https://github.com/zsky1/apifox-polaris-api/releases/download/v1.1.0/com.zsky1.apifox-1.1.0-linux-arm64.dbxp",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "size": 0
+      "sha256": "8676387ca2d60a0fa247b91e8c66c2c3fc2bf168f56e4741b0655c1ec4968bda",
+      "size": 1925448
     },
     {
       "target": "linux-x64",
       "url": "https://github.com/zsky1/apifox-polaris-api/releases/download/v1.1.0/com.zsky1.apifox-1.1.0-linux-x64.dbxp",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "size": 0
+      "sha256": "c6392c803132d3d62af7a29fb3ccd905f494f586b2b2068813551939d22eccb4",
+      "size": 2019789
     },
     {
       "target": "windows-x64",
       "url": "https://github.com/zsky1/apifox-polaris-api/releases/download/v1.1.0/com.zsky1.apifox-1.1.0-windows-x64.dbxp",
-      "sha256": "7fcfa167db276b7845934c7bf925c80837b652e0f4b0c9a127d9eec071139820",
-      "size": 1951084
+      "sha256": "260535bcfe53a95308468d998d38dcd48e9d81e62cf17a48353ba86d52947475",
+      "size": 2025362
     }
   ]
 }

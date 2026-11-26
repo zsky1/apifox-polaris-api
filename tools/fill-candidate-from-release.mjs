@@ -36,8 +36,9 @@ if (!fs.existsSync(releaseFile)) {
   process.exit(2);
 }
 const raw = JSON.parse(fs.readFileSync(releaseFile, 'utf8'));
-const list = Array.isArray(raw) ? raw : (raw.candidates || raw.targets || []);
+const list = Array.isArray(raw) ? raw : (raw.candidates || raw.artifacts || raw.targets || []);
 const byTarget = new Map(list.map((x) => [x.target, x]));
+const releaseBase = `https://github.com/zsky1/apifox-polaris-api/releases/download/${tag}/`;
 
 const required = ['darwin-arm64', 'darwin-x64', 'linux-arm64', 'linux-x64', 'windows-x64'];
 const missing = [];
@@ -46,7 +47,8 @@ for (const t of required) {
   if (!item) { missing.push(t); continue; }
   const sha = String(item.sha256 || '');
   const size = Number(item.size || 0);
-  const url = String(item.url || '');
+  const urlValue = String(item.url || '');
+  const url = /^https:\/\//.test(urlValue) ? urlValue : `${releaseBase}${urlValue}`;
   if (!/^[0-9a-f]{64}$/.test(sha) || !(size > 0) || !/^https:\/\//.test(url)) {
     console.error(`target ${t} 的 sha256/size/url 不完整：`, { sha, size, url });
     process.exit(2);
