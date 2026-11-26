@@ -1,20 +1,20 @@
 ## Plugin submission
-- Plugin ID: `com.fax.apifox`
+- Plugin ID: `com.zsky1.apifox`
 - Version: `1.1.0`
-- Publisher ID: `fax`
+- Publisher ID: `zsky1`
 
 ## Source repository and tag
 https://github.com/zsky1/apifox-polaris-api — tag `v1.1.0`, release `v1.1.0`.
 All unsigned target packages are built by the repository's `plugin-release.yml`
 via `t8y2/dbx/.github/workflows/plugin-release-reusable.yml@main` from that tag.
-The `sha256` / `size` in `candidates/com.fax.apifox.json` pin those exact unsigned bytes.
+The `sha256` / `size` in `candidates/com.zsky1.apifox.json` pin those exact unsigned bytes.
 
 This is a community fork of an upstream `polaris-api` derivative. The original
 authors and license are attributed in the packaged `NOTICE` (Apache-2.0 §4);
 the fork relationship is stated in the listing description.
 
 ## Capabilities and user workflow
-- Workbench contribution `com.fax.apifox.workbench` (label: apifox-polaris-api).
+- Workbench contribution `com.zsky1.apifox.workbench` (label: apifox-polaris-api).
 - The plugin keeps the upstream `.http` file-first API client intact: local
   `.http` / `.rest` source editing, syntax highlighting, multi-tab, environment
   variables, cURL import/export, multipart/form-data, streaming SSE and
@@ -71,4 +71,4 @@ https://github.com/zsky1/apifox-polaris-api
 ## Confirmation
 - [x] The candidate packages are unsigned and match the disclosed source tag.
 - [x] I have not included private keys, tokens, credentials, or proprietary data.
-- [x] The candidates are listed in `candidates/com.fax.apifox.json`; `plugins/` and `catalog/` were not edited manually.
+- [x] The candidates are listed in `candidates/com.zsky1.apifox.json`; `plugins/` and `catalog/` were not edited manually.

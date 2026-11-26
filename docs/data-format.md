@@ -127,13 +127,13 @@ Content-Type: application/json
 ## 3. `_history/_meta.json`
 
 ```json
-{"formatVersion":1,"app":"com.fax.apifox","createdAt":"2026-11-21T01:40:00.000Z"}
+{"formatVersion":1,"app":"com.zsky1.apifox","createdAt":"2026-11-21T01:40:00.000Z"}
 ```
 
 | 字段 | 类型 | 必填 | 语义 | 兼容规则 |
 |---|---|---|---|---|
 | `formatVersion` | number | 是 | 整份历史的格式版本，1.0.0 = `1` | 只增 |
-| `app` | string | 是 | 固定 `com.fax.apifox`，防止误读别人的目录 | 永不变 |
+| `app` | string | 是 | 固定 `com.zsky1.apifox`，防止误读别人的目录 | 永不变 |
 | `createdAt` | string | 是 | 首次建立时的 ISO 8601 时间 | 永不变 |
 
 **写入规则**

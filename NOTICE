@@ -14,7 +14,7 @@ Upstream version this fork starts from: polaris-api v0.2.0
 (https://github.com/misxzaiz/polaris-api/tree/v0.2.0), commit history of the
 upstream project prior to the fork is retained in this repository.
 
-Changes made in this fork (plugin id com.fax.apifox, name
+Changes made in this fork (plugin id com.zsky1.apifox, name
 apifox-polaris-api, display name "apifox-polaris-api"):
 
 - renamed the plugin and its workbench;

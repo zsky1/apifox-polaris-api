@@ -61,7 +61,7 @@ impl PluginHandler for PolarisApi {
             "http/request" => handle_request(params, emitter),
             "apifox/ping" => Ok(json!({
                 "ok": true,
-                "plugin": "com.fax.apifox",
+                "plugin": "com.zsky1.apifox",
                 "version": env!("CARGO_PKG_VERSION"),
             })),
             "http/defaultDirs" => handle_default_dirs(),
@@ -110,16 +110,16 @@ fn now_nanos() -> u32 {
 fn default_results_dir() -> PathBuf {
     if let Ok(p) = std::env::var("DBX_PLUGIN_DATA_DIR") {
         if !p.is_empty() {
-            return PathBuf::from(p).join("com.fax.apifox").join("results");
+            return PathBuf::from(p).join("com.zsky1.apifox").join("results");
         }
     }
     if let Ok(p) = std::env::var("LOCALAPPDATA") {
-        return PathBuf::from(p).join("DBX").join("plugins").join("com.fax.apifox").join("results");
+        return PathBuf::from(p).join("DBX").join("plugins").join("com.zsky1.apifox").join("results");
     }
     if let Ok(p) = std::env::var("HOME") {
         return PathBuf::from(p)
             .join(".local").join("share").join("dbx").join("plugins")
-            .join("com.fax.apifox").join("results");
+            .join("com.zsky1.apifox").join("results");
     }
     PathBuf::from("results")
 }
@@ -1636,7 +1636,7 @@ fn handle_ws_list() -> Result<Value, PluginError> {
 }
 
 fn main() -> std::io::Result<()> {
-    let metadata = PluginMetadata::new("com.fax.apifox", env!("CARGO_PKG_VERSION"))
+    let metadata = PluginMetadata::new("com.zsky1.apifox", env!("CARGO_PKG_VERSION"))
         .with_capability("events");
     PluginServer::new(metadata, PolarisApi).serve()
 }

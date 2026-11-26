@@ -148,8 +148,8 @@ node dev/dev-server.mjs
   > `.dbx-store.json` 的 `releaseNotes` 仍是 0.6.4 文案 —— 它只影响商店展示，0.9.0 不上架，**留到 1.0.0 再写，避免写两遍**。
 - **S7.3 出包（要通网）**：tag `v1.0.0` → GitHub Release → Actions 三平台构建（本仓库这份沙箱连不上 GitHub，
   只能在通网机器上做）。
-- **S7.4 上架（要通网 + 维护者审）**：新开商店 PR，`candidates/com.fax.apifox.json` 指向 v1.0.0
-  五平台产物 + `publishers/fax.json`，附 release notes。
+- **S7.4 上架（要通网 + 维护者审）**：新开商店 PR，`candidates/com.zsky1.apifox.json` 指向 v1.0.0
+  五平台产物 + `publishers/zsky1.json`，附 release notes。
 
 发版前最后跑一次（沙箱里就能做的）：
 ```bash

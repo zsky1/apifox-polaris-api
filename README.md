@@ -1,10 +1,10 @@
 # apifox-polaris-api
 
-DBX 插件 `com.fax.apifox` —— Apifox 只读拉取版 API 请求客户端（Rust sidecar 版）。
+DBX 插件 `com.zsky1.apifox` —— Apifox 只读拉取版 API 请求客户端（Rust sidecar 版）。
 
 源码仓库：https://github.com/zsky1/apifox-polaris-api
 
-本插件基于上游 fork 二次开发（原作者署名见 NOTICE），ID 为 `com.fax.apifox`，显示名 `apifox-polaris-api`，与上游插件互不冲突。
+本插件基于上游 fork 二次开发（原作者署名见 NOTICE），ID 为 `com.zsky1.apifox`，显示名 `apifox-polaris-api`，与上游插件互不冲突。
 
 基于 [misxzaiz/polaris-api](https://github.com/misxzaiz/polaris-api)（`com.polaris.api`）**0.2.0** 拉取并二次开发。
 
@@ -97,7 +97,7 @@ DBX 插件 `com.fax.apifox` —— Apifox 只读拉取版 API 请求客户端（
 
 ### 结果保存与历史
 
-- **结果目录**：默认 `%LOCALAPPDATA%\DBX\plugins\com.fax.apifox\results`（Linux/macOS 为 `~/.local/share/dbx/plugins/com.fax.apifox/results`），可手动改。每次运行都会自动写入一个 JSON 文件，包含完整请求快照与响应体。
+- **结果目录**：默认 `%LOCALAPPDATA%\DBX\plugins\com.zsky1.apifox\results`（Linux/macOS 为 `~/.local/share/dbx/plugins/com.zsky1.apifox/results`），可手动改。每次运行都会自动写入一个 JSON 文件，包含完整请求快照与响应体。
 - **每个接口只留最近 10 份**（v0.9.4）：写完新的一份就把该接口更早的删掉，与 `_history` 的 10 条一致——否则调用越多目录越胀，而且历史轮转掉的那些结果文件再没人读。分组认「请求名 + 所在 `.http`」：两个文件里都叫「元数据接口」也不会互相挤。老记录的结果被回收后再点「详情」，会提示「结果文件不存在（每个接口只留最近 10 份，更早的已回收）」。
 - **历史结果**：顶栏「◷ 历史结果」列出本机已保存的结果，点「打开」即用原有响应视图重新渲染；也可「删除」或「打开目录」。
 - 结果写入本地文件而不是 `host.storage`，因为后者单值 256 KiB、插件总量 1 MiB，装不下真实响应体。sidecar 以当前用户权限运行，本地文件读写无需额外 manifest 权限。
@@ -526,7 +526,7 @@ GitHub Release published → `.github/workflows/plugin-release.yml` 自动为所
 
 ## 版本历史
 
-- **v1.1.0** — **更名为 apifox（`com.fax.apifox`）并与 apifox-polaris-api 完全隔离**；**Apifox 只读拉取**：保留原项目全部功能，新增从 Apifox 拉取接口树 / 环境到本地，不回写 Apifox；Rust sidecar 提供 `apifox/*` 只读 RPC（三方择优：api-tree-list / http-apis / OpenAPI），前端新增 `ui/apifox.js` 与侧栏「⇅ Apifox」入口。
+- **v1.1.0** — **更名为 apifox（`com.zsky1.apifox`）并与 apifox-polaris-api 完全隔离**；**Apifox 只读拉取**：保留原项目全部功能，新增从 Apifox 拉取接口树 / 环境到本地，不回写 Apifox；Rust sidecar 提供 `apifox/*` 只读 RPC（三方择优：api-tree-list / http-apis / OpenAPI），前端新增 `ui/apifox.js` 与侧栏「⇅ Apifox」入口。
 - **v1.0.0** — **第一个正式版：功能收口**：
   - **侧栏顶部那排图标全删了**（＋ 新建 / ↻ 重读 / ↧ 导入 / ↥ 导出）。文件真源下它们已经冗余：新建与挂载在侧栏底部有「＋ 挂载 .http」「＋ 新建文件夹」，外部改动靠窗口 focus 自动重扫，集合 JSON 的导入导出在「文件即源」之后没有意义。四个 26px 方框还把「工作区 · WORKSPACE」挤得只剩一条缝。
   - **换成「折叠」「展开」两个纯前端开关**：一键收起 / 展开所有集合（含文件夹）。只改内存里的 `collapsed` 与 `ui.collapsed`，**不写 `wpa-workspace.json`、不动任何 `.http`**；搜索框有词时先清空，否则列表本来就是全展开的，点了像没反应。

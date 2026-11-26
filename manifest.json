@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/t8y2/dbx/main/plugins/manifest.schema.json",
   "manifest_version": 1,
-  "id": "com.fax.apifox",
+  "id": "com.zsky1.apifox",
   "name": "apifox-polaris-api",
   "version": "1.1.0",
-  "publisher": "fax",
+  "publisher": "zsky1",
   "description": "Apifox 只读拉取版 API 请求客户端（Rust sidecar）：本插件是基于上游 fork 二次开发（见 NOTICE 署名），在其本地 .http 编辑能力之上，新增从 Apifox 只读拉取接口树与环境到本地（不回写 Apifox）。保留 .http 原位源码编辑、多 tab、环境变量、cURL 导入导出、multipart、SSE / WebSocket。请求经 sidecar（reqwest）发送，无 CORS / 混合内容 / 禁发头限制，等效 cURL。",
   "icon": "assets/plugin.svg",
   "permissions": [
@@ -27,7 +27,7 @@
   "contributions": [
     {
       "type": "workbench",
-      "id": "com.fax.apifox.workbench",
+      "id": "com.zsky1.apifox.workbench",
       "label": "apifox-polaris-api",
       "description": "API 请求客户端：本地 .http 源码编辑、一点即发、从 Apifox 只读拉取接口树与环境。",
       "icon": "assets/plugin.svg"
@@ -38,7 +38,7 @@
       "name": "apifox-polaris-api",
       "description": "Apifox 只读拉取版 API 请求客户端：本地 .http 源码编辑、一点即发，支持从 Apifox 只读拉取接口树与环境到本地，不回写。",
       "contributions": {
-        "com.fax.apifox.workbench": {
+        "com.zsky1.apifox.workbench": {
           "label": "apifox-polaris-api",
           "description": "API 请求客户端：.http 源码编辑、多 tab、环境变量、cURL、SSE / WebSocket，并从 Apifox 只读拉取接口与环境。"
         }

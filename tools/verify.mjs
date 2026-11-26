@@ -19,9 +19,9 @@ ok(`manifest.json 是合法 JSON 且版本为 ${VERSION}`, () => {
   const m = JSON.parse(read('manifest.json'));
   assert(m.manifest_version === 1, 'manifest_version');
   assert(m.version === VERSION, 'version=' + m.version);
-  assert(m.id === 'com.fax.apifox', 'id');
+  assert(m.id === 'com.zsky1.apifox', 'id');
   assert(m.name === 'apifox-polaris-api', 'name');
-  assert(m.publisher === 'fax', 'publisher');
+  assert(m.publisher === 'zsky1', 'publisher');
   assert(m.entrypoints.backend.executable === 'bin/windows-x64/dbx-plugin-apifox.exe', 'executable');
   assert(m.entrypoints && m.entrypoints.backend && m.entrypoints.ui, 'entrypoints');
   assert(Array.isArray(m.contributions) && m.contributions.length, 'contributions');
