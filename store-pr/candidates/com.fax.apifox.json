@@ -58,8 +58,8 @@
     {
       "target": "windows-x64",
       "url": "https://github.com/zsky1/apifox-polaris-api/releases/download/v1.1.0/com.fax.apifox-1.1.0-windows-x64.dbxp",
-      "sha256": "6c55ef1262354700142fbc5385a38b091b3782540ed92a2d5622fe8bec2ef657",
-      "size": 1950731
+      "sha256": "138269d914e0cf9897a4b10fef52ceaa0c929508989d2086d480269d833df6db",
+      "size": 1951030
     }
   ]
 }
